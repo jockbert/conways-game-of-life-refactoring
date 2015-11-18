@@ -214,7 +214,15 @@ public class GameOfLife {
 	}
 
 	public boolean isAlive(int x, int y) {
-		char c = world.get(y).charAt(x);
+		if (x < 0 || y < 0 || y >= world.size())
+			return false;
+
+		String line = world.get(y);
+
+		if (x >= line.length())
+			return false;
+
+		char c = line.charAt(x);
 
 		if (c == '#')
 			return true;
@@ -405,30 +413,16 @@ public class GameOfLife {
 		for (int h = 0; h < world.size(); h++) {
 			String line = "";
 			for (int w = 0; w < world.get(0).length(); w++) {
-				/* count alive neighbors */
+
 				int n = 0;
-
-				if (h != 0 && w != 0 && isAlive(w - 1, h - 1))
-					n++;
-				if (h != 0 && isAlive(w, h - 1))
-					n++;
-				if (h != 0 && w != world.get(0).length() - 1
-						&& isAlive(w + 1, h - 1))
-					n++;
-
-				if (w != 0 && isAlive(w - 1, h))
-					n++;
-
-				if (w != world.get(0).length() - 1 && isAlive(w + 1, h))
-					n++;
-
-				if (h != world.size() - 1 && w != 0 && isAlive(w - 1, h + 1))
-					n++;
-				if (h != world.size() - 1 && isAlive(w, h + 1))
-					n++;
-				if (h != world.size() - 1 && w != world.get(0).length() - 1
-						&& isAlive(w + 1, h + 1))
-					n++;
+				n += aliveCellsAt(w - 1, h - 1);
+				n += aliveCellsAt(w, h - 1);
+				n += aliveCellsAt(w + 1, h - 1);
+				n += aliveCellsAt(w - 1, h);
+				n += aliveCellsAt(w + 1, h);
+				n += aliveCellsAt(w - 1, h + 1);
+				n += aliveCellsAt(w, h + 1);
+				n += aliveCellsAt(w + 1, h + 1);
 
 				char cell = '-';
 
@@ -445,5 +439,9 @@ public class GameOfLife {
 			newWorld.add(line);
 		}
 		return newWorld;
+	}
+
+	private int aliveCellsAt(int x, int y) {
+		return isAlive(x, y) ? 1 : 0;
 	}
 }
