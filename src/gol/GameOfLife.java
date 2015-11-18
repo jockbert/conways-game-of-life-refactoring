@@ -287,29 +287,9 @@ public class GameOfLife {
 
 		while (stepCount <= steps) {
 
-			if (stepCount != 0) {
+			if (stepCount != 0)
+				iterateSimulationOneStep();
 
-				addMarginsToWorld();
-
-				int newHeightOffset = heightOffset;
-				int newWidthtOffset = widthOffset;
-
-				List<String> newWorld = nextWorld();
-
-				stripMarginsFromWorld();
-
-				history.add(0, new History(world, heightOffset, widthOffset));
-				if (history.size() == historyLength + 1)
-					history.remove(historyLength);
-
-				world = newWorld;
-				heightOffset = newHeightOffset;
-				widthOffset = newWidthtOffset;
-
-				stripMarginsFromWorld();
-
-			}
-			
 			String loopDetection = "";
 
 			int index = history.indexOf(new History(world, heightOffset,
@@ -369,8 +349,6 @@ public class GameOfLife {
 					printWorldLine(line);
 				}
 
-			
-
 				if (stepCount == 0) {
 					System.out.println("start");
 				} else
@@ -401,6 +379,27 @@ public class GameOfLife {
 		}
 	}
 
+	private void iterateSimulationOneStep() {
+		addMarginsToWorld();
+
+		int newHeightOffset = heightOffset;
+		int newWidthtOffset = widthOffset;
+
+		List<String> newWorld = nextWorld();
+
+		stripMarginsFromWorld();
+
+		history.add(0, new History(world, heightOffset, widthOffset));
+		if (history.size() == historyLength + 1)
+			history.remove(historyLength);
+
+		world = newWorld;
+		heightOffset = newHeightOffset;
+		widthOffset = newWidthtOffset;
+
+		stripMarginsFromWorld();
+	}
+
 	private List<String> nextWorld() {
 		List<String> newWorld = new ArrayList<>();
 
@@ -424,13 +423,11 @@ public class GameOfLife {
 				if (w != world.get(0).length() - 1 && isAlive(w + 1, h))
 					n++;
 
-				if (h != world.size() - 1 && w != 0
-						&& isAlive(w - 1, h + 1))
+				if (h != world.size() - 1 && w != 0 && isAlive(w - 1, h + 1))
 					n++;
 				if (h != world.size() - 1 && isAlive(w, h + 1))
 					n++;
-				if (h != world.size() - 1
-						&& w != world.get(0).length() - 1
+				if (h != world.size() - 1 && w != world.get(0).length() - 1
 						&& isAlive(w + 1, h + 1))
 					n++;
 
