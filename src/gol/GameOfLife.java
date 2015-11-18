@@ -73,7 +73,6 @@ public class GameOfLife {
 	private List<History> history = new LinkedList<History>();
 	private int widthOffset = 0;
 	private static long computationTimeStart;
-	static int stepCount = 0;
 	static String dorun = "yes";
 	private static int historyLength;
 	private static int stepDelay = -1;
@@ -287,7 +286,7 @@ public class GameOfLife {
 
 	private void runSimulation() {
 
-		while (stepCount <= steps) {
+		for (int stepCount = 0; stepCount <= steps; ++stepCount) {
 
 			if (stepCount != 0)
 				iterateSimulationOneStep();
@@ -370,8 +369,6 @@ public class GameOfLife {
 
 			if (loopLength != NO_LOOP)
 				break;
-
-			stepCount++;
 		}
 	}
 
