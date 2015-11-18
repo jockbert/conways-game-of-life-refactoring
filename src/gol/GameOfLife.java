@@ -73,15 +73,12 @@ public class GameOfLife {
 	private List<History> history = new LinkedList<History>();
 	private int widthOffset = 0;
 	private static long computationTimeStart;
-	static String dorun = "yes";
 	private static int historyLength;
 	private static int stepDelay = -1;
 	private static boolean quietMode = false;
 
 	public static void main(String[] args) {
 		GameOfLife game = new GameOfLife();
-
-		dorun = "yes";
 
 		computationTimeStart = System.currentTimeMillis();
 
@@ -188,10 +185,11 @@ public class GameOfLife {
 			if (game.steps == -1)
 				game.steps = 100;
 
+			game.runSimulation();
+
 		} catch (Exception e) {
 			line(e.getMessage());
 
-			dorun = "no";
 			line("");
 			line("Usage");
 			line(" java gol.GameOfLife [ARGUMENTS...]");
@@ -209,8 +207,6 @@ public class GameOfLife {
 			line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
 		}
 
-		if (dorun.equals("yes"))
-			game.runSimulation();
 	}
 
 	void printWorldLine(String line) {
