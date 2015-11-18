@@ -41,16 +41,6 @@ public class GameOfLife {
 			this.widthOffset = widthOffset;
 		}
 
-//		@Override
-//		public int hashCode() {
-//			final int prime = 31;
-//			int result = 1;
-//			result = prime * result + heightOffset;
-//			result = prime * result + widthOffset;
-//			result = prime * result + ((world == null) ? 0 : world.hashCode());
-//			return result;
-//		}
-
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj)
