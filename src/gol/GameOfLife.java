@@ -373,9 +373,8 @@ public class GameOfLife {
 	}
 
 	private int detectLoop() {
-		int index = history.indexOf(new History(world, heightOffset,
-				widthOffset));
-
+		History itemToFind = new History(world, heightOffset, widthOffset);
+		int index = history.indexOf(itemToFind);
 		return (index != -1) ? index + 1 : NO_LOOP;
 	}
 
