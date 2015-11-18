@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 public class GameOfLife {
 
+	private static final int NO_LOOP = 0;
+
 	static void line(String s) {
 		System.out.println(s);
 	}
@@ -290,14 +292,7 @@ public class GameOfLife {
 			if (stepCount != 0)
 				iterateSimulationOneStep();
 
-			String loopDetection = "";
-
-			int index = history.indexOf(new History(world, heightOffset,
-					widthOffset));
-			if (index != -1) {
-				loopDetection = " - loop of length " + (index + 1)
-						+ " detected";
-			}
+			int loopOfLengthFound = detectLoop();
 
 			String linePrefix = "";
 
@@ -314,7 +309,8 @@ public class GameOfLife {
 
 			int printHeight = 0;
 
-			if (!quietMode || stepCount == steps || !loopDetection.isEmpty()) {
+			if (!quietMode || stepCount == steps
+					|| loopOfLengthFound != NO_LOOP) {
 				for (int i = 0; i < Math.min(heightOffset, height); i++) {
 					String line = "";
 					while (line.length() < width) {
@@ -351,8 +347,13 @@ public class GameOfLife {
 
 				if (stepCount == 0) {
 					System.out.println("start");
-				} else
+				} else {
+					String loopDetection = loopOfLengthFound == NO_LOOP ? ""
+							: " - loop of length " + loopOfLengthFound
+									+ " detected";
+
 					line("step " + stepCount + loopDetection);
+				}
 				System.out.println();
 			}
 
@@ -373,10 +374,17 @@ public class GameOfLife {
 
 			computationTimeStart = System.currentTimeMillis();
 
-			if (!loopDetection.isEmpty()) {
+			if (loopOfLengthFound != NO_LOOP) {
 				break;
 			}
 		}
+	}
+
+	private int detectLoop() {
+		int index = history.indexOf(new History(world, heightOffset,
+				widthOffset));
+
+		return (index != -1) ? index + 1 : NO_LOOP;
 	}
 
 	private void iterateSimulationOneStep() {
