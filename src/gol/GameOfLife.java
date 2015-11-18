@@ -291,54 +291,10 @@ public class GameOfLife {
 
 				addMarginsToWorld();
 
-				List<String> newWorld = new ArrayList<>();
 				int newHeightOffset = heightOffset;
 				int newWidthtOffset = widthOffset;
 
-				for (int h = 0; h < world.size(); h++) {
-					String line = "";
-					for (int w = 0; w < world.get(0).length(); w++) {
-						/* count alive neighbors */
-						int n = 0;
-
-						if (h != 0 && w != 0 && isAlive(w - 1, h - 1))
-							n++;
-						if (h != 0 && isAlive(w, h - 1))
-							n++;
-						if (h != 0 && w != world.get(0).length() - 1
-								&& isAlive(w + 1, h - 1))
-							n++;
-
-						if (w != 0 && isAlive(w - 1, h))
-							n++;
-
-						if (w != world.get(0).length() - 1 && isAlive(w + 1, h))
-							n++;
-
-						if (h != world.size() - 1 && w != 0
-								&& isAlive(w - 1, h + 1))
-							n++;
-						if (h != world.size() - 1 && isAlive(w, h + 1))
-							n++;
-						if (h != world.size() - 1
-								&& w != world.get(0).length() - 1
-								&& isAlive(w + 1, h + 1))
-							n++;
-
-						char cell = '-';
-
-						if (isAlive(w, h)) {
-							if (n == 2 || n == 3)
-								cell = '#';
-						} else {
-							if (n == 3)
-								cell = '#';
-						}
-
-						line += cell;
-					}
-					newWorld.add(line);
-				}
+				List<String> newWorld = nextWorld();
 
 				stripMarginsFromWorld();
 
@@ -443,5 +399,55 @@ public class GameOfLife {
 				break;
 			}
 		}
+	}
+
+	private List<String> nextWorld() {
+		List<String> newWorld = new ArrayList<>();
+
+		for (int h = 0; h < world.size(); h++) {
+			String line = "";
+			for (int w = 0; w < world.get(0).length(); w++) {
+				/* count alive neighbors */
+				int n = 0;
+
+				if (h != 0 && w != 0 && isAlive(w - 1, h - 1))
+					n++;
+				if (h != 0 && isAlive(w, h - 1))
+					n++;
+				if (h != 0 && w != world.get(0).length() - 1
+						&& isAlive(w + 1, h - 1))
+					n++;
+
+				if (w != 0 && isAlive(w - 1, h))
+					n++;
+
+				if (w != world.get(0).length() - 1 && isAlive(w + 1, h))
+					n++;
+
+				if (h != world.size() - 1 && w != 0
+						&& isAlive(w - 1, h + 1))
+					n++;
+				if (h != world.size() - 1 && isAlive(w, h + 1))
+					n++;
+				if (h != world.size() - 1
+						&& w != world.get(0).length() - 1
+						&& isAlive(w + 1, h + 1))
+					n++;
+
+				char cell = '-';
+
+				if (isAlive(w, h)) {
+					if (n == 2 || n == 3)
+						cell = '#';
+				} else {
+					if (n == 3)
+						cell = '#';
+				}
+
+				line += cell;
+			}
+			newWorld.add(line);
+		}
+		return newWorld;
 	}
 }
