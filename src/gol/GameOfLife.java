@@ -293,66 +293,7 @@ public class GameOfLife {
 
 			int loopLength = detectLoop();
 
-			String linePrefix = "";
-
-			for (int i = 0; i < widthOffset; i++) {
-				linePrefix += '-';
-			}
-
-			String lineSuffix = "";
-
-			int worldWidth = world.isEmpty() ? 0 : world.get(0).length();
-			for (int i = 0; i < width - worldWidth - widthOffset; i++) {
-				lineSuffix += '-';
-			}
-
-			int printHeight = 0;
-
-			if (!quietMode || stepCount == steps || loopLength != NO_LOOP) {
-				for (int i = 0; i < Math.min(heightOffset, height); i++) {
-					String line = "";
-					while (line.length() < width) {
-						line += '-';
-					}
-					printWorldLine(line);
-					printHeight++;
-				}
-
-				for (int i = Math.max(0, -heightOffset); i < world.size(); i++) {
-
-					if (printHeight == height)
-						break;
-					String line = world.get(i);
-
-					line = linePrefix + line + lineSuffix;
-
-					if (widthOffset < 0)
-						line = line.substring(-widthOffset);
-
-					if (line.length() > width)
-						line = line.substring(0, width);
-					printWorldLine(line);
-					printHeight++;
-				}
-
-				for (; printHeight < height; printHeight++) {
-					String line = "";
-					while (line.length() < width) {
-						line += '-';
-					}
-					printWorldLine(line);
-				}
-
-				if (stepCount == 0) {
-					System.out.println("start");
-				} else {
-					String loopText = loopLength == NO_LOOP ? ""
-							: " - loop of length " + loopLength + " detected";
-
-					line("step " + stepCount + loopText);
-				}
-				System.out.println();
-			}
+			printStep(stepCount, loopLength);
 
 			long computationTime = System.currentTimeMillis()
 					- computationTimeStart;
@@ -369,6 +310,69 @@ public class GameOfLife {
 
 			if (loopLength != NO_LOOP)
 				break;
+		}
+	}
+
+	private void printStep(int stepCount, int loopLength) {
+		String linePrefix = "";
+
+		for (int i = 0; i < widthOffset; i++) {
+			linePrefix += '-';
+		}
+
+		String lineSuffix = "";
+
+		int worldWidth = world.isEmpty() ? 0 : world.get(0).length();
+		for (int i = 0; i < width - worldWidth - widthOffset; i++) {
+			lineSuffix += '-';
+		}
+
+		int printHeight = 0;
+
+		if (!quietMode || stepCount == steps || loopLength != NO_LOOP) {
+			for (int i = 0; i < Math.min(heightOffset, height); i++) {
+				String line = "";
+				while (line.length() < width) {
+					line += '-';
+				}
+				printWorldLine(line);
+				printHeight++;
+			}
+
+			for (int i = Math.max(0, -heightOffset); i < world.size(); i++) {
+
+				if (printHeight == height)
+					break;
+				String line = world.get(i);
+
+				line = linePrefix + line + lineSuffix;
+
+				if (widthOffset < 0)
+					line = line.substring(-widthOffset);
+
+				if (line.length() > width)
+					line = line.substring(0, width);
+				printWorldLine(line);
+				printHeight++;
+			}
+
+			for (; printHeight < height; printHeight++) {
+				String line = "";
+				while (line.length() < width) {
+					line += '-';
+				}
+				printWorldLine(line);
+			}
+
+			if (stepCount == 0) {
+				System.out.println("start");
+			} else {
+				String loopText = loopLength == NO_LOOP ? ""
+						: " - loop of length " + loopLength + " detected";
+
+				line("step " + stepCount + loopText);
+			}
+			System.out.println();
 		}
 	}
 
