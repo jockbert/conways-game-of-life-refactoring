@@ -292,7 +292,7 @@ public class GameOfLife {
 			if (stepCount != 0)
 				iterateSimulationOneStep();
 
-			int loopOfLengthFound = detectLoop();
+			int loopLength = detectLoop();
 
 			String linePrefix = "";
 
@@ -309,8 +309,7 @@ public class GameOfLife {
 
 			int printHeight = 0;
 
-			if (!quietMode || stepCount == steps
-					|| loopOfLengthFound != NO_LOOP) {
+			if (!quietMode || stepCount == steps || loopLength != NO_LOOP) {
 				for (int i = 0; i < Math.min(heightOffset, height); i++) {
 					String line = "";
 					while (line.length() < width) {
@@ -348,24 +347,19 @@ public class GameOfLife {
 				if (stepCount == 0) {
 					System.out.println("start");
 				} else {
-					String loopDetection = loopOfLengthFound == NO_LOOP ? ""
-							: " - loop of length " + loopOfLengthFound
-									+ " detected";
+					String loopText = loopLength == NO_LOOP ? ""
+							: " - loop of length " + loopLength + " detected";
 
-					line("step " + stepCount + loopDetection);
+					line("step " + stepCount + loopText);
 				}
 				System.out.println();
 			}
 
-			stepCount++;
-
 			long computationTime = System.currentTimeMillis()
 					- computationTimeStart;
 
-			// long computationTime = 0;
 			if (!quietMode && stepDelay - computationTime >= 0) {
 				try {
-
 					Thread.sleep(stepDelay - computationTime);
 				} catch (InterruptedException ex) {
 					Thread.currentThread().interrupt();
@@ -374,9 +368,10 @@ public class GameOfLife {
 
 			computationTimeStart = System.currentTimeMillis();
 
-			if (loopOfLengthFound != NO_LOOP) {
+			if (loopLength != NO_LOOP)
 				break;
-			}
+
+			stepCount++;
 		}
 	}
 
