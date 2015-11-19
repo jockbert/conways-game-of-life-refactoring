@@ -424,17 +424,9 @@ public class GameOfLife {
 				n += aliveCellsAt(w, h + 1);
 				n += aliveCellsAt(w + 1, h + 1);
 
-				char cell = '-';
+				boolean willLive = n == 3 || (n == 2 && isAlive(w, h));
 
-				if (isAlive(w, h)) {
-					if (n == 2 || n == 3)
-						cell = '#';
-				} else {
-					if (n == 3)
-						cell = '#';
-				}
-
-				line += cell;
+				line += willLive ? '#' : '-';
 			}
 			newWorld.add(line);
 		}
