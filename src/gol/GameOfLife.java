@@ -1,5 +1,8 @@
 package gol;
 
+import gol.output.DefaultHashDashFormat;
+import gol.output.OutputFormat;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -76,6 +79,8 @@ public class GameOfLife {
 	private static int historyLength;
 	private static int stepDelay = -1;
 	private static boolean quietMode = false;
+
+	OutputFormat outputFormat = new DefaultHashDashFormat();
 
 	public static void main(String[] args) {
 		GameOfLife game = new GameOfLife();
@@ -209,6 +214,15 @@ public class GameOfLife {
 
 	}
 
+	void printWorldLineInternal(String line) {
+		StringBuilder result = new StringBuilder();
+
+		for (char c : line.toCharArray())
+			result.append(outputFormat.cell(isAlive(c)));
+
+		printWorldLine(result.toString());
+	}
+
 	void printWorldLine(String line) {
 		System.out.println(line);
 	}
@@ -224,10 +238,11 @@ public class GameOfLife {
 
 		char c = line.charAt(x);
 
-		if (c == '#')
-			return true;
-		else
-			return false;
+		return isAlive(c);
+	}
+
+	private boolean isAlive(char cell) {
+		return cell == '#';
 	}
 
 	String emptyLine() {
@@ -318,6 +333,7 @@ public class GameOfLife {
 	}
 
 	private void printStep(int stepCount, int loopLength) {
+
 		String linePrefix = "";
 
 		for (int i = 0; i < widthOffset; i++) {
@@ -339,7 +355,7 @@ public class GameOfLife {
 				while (line.length() < width) {
 					line += '-';
 				}
-				printWorldLine(line);
+				printWorldLineInternal(line);
 				printHeight++;
 			}
 
@@ -356,7 +372,7 @@ public class GameOfLife {
 
 				if (line.length() > width)
 					line = line.substring(0, width);
-				printWorldLine(line);
+				printWorldLineInternal(line);
 				printHeight++;
 			}
 
@@ -365,7 +381,7 @@ public class GameOfLife {
 				while (line.length() < width) {
 					line += '-';
 				}
-				printWorldLine(line);
+				printWorldLineInternal(line);
 			}
 
 			if (stepCount == 0) {
