@@ -1,7 +1,9 @@
 package gol;
 
+import gol.output.BigOFormat;
 import gol.output.DefaultHashDashFormat;
 import gol.output.OutputFormat;
+import gol.output.SpacedAtFormat;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -138,21 +140,9 @@ public class GameOfLife {
 				} else if ("-?".equals(arg)) {
 					throw new Exception("Help requested");
 				} else if ("-@".equals(arg)) {
-					GameOfLifeSpecialOutputFormat newGame = new GameOfLifeSpecialOutputFormat();
-					newGame.isAtSigns = true;
-					newGame.world = game.world;
-					newGame.height = game.height;
-					newGame.width = game.width;
-					newGame.steps = game.steps;
-					game = newGame;
+					game.outputFormat = new SpacedAtFormat();
 				} else if ("-O".equals(arg)) {
-					GameOfLifeSpecialOutputFormat newGame = new GameOfLifeSpecialOutputFormat();
-					newGame.isAtSigns = false;
-					newGame.world = game.world;
-					newGame.height = game.height;
-					newGame.width = game.width;
-					newGame.steps = game.steps;
-					game = newGame;
+					game.outputFormat = new BigOFormat();
 				} else if (arg.equals("-w")) {
 					game.width = getIntArg(argList);
 				} else if ("-h".equals(arg))
@@ -214,17 +204,13 @@ public class GameOfLife {
 
 	}
 
-	void printWorldLineInternal(String line) {
+	void printWorldLine(String line) {
 		StringBuilder result = new StringBuilder();
 
 		for (char c : line.toCharArray())
 			result.append(outputFormat.cell(isAlive(c)));
 
-		printWorldLine(result.toString());
-	}
-
-	void printWorldLine(String line) {
-		System.out.println(line);
+		System.out.println(result.toString());
 	}
 
 	public boolean isAlive(int x, int y) {
@@ -355,7 +341,7 @@ public class GameOfLife {
 				while (line.length() < width) {
 					line += '-';
 				}
-				printWorldLineInternal(line);
+				printWorldLine(line);
 				printHeight++;
 			}
 
@@ -372,7 +358,7 @@ public class GameOfLife {
 
 				if (line.length() > width)
 					line = line.substring(0, width);
-				printWorldLineInternal(line);
+				printWorldLine(line);
 				printHeight++;
 			}
 
@@ -381,7 +367,7 @@ public class GameOfLife {
 				while (line.length() < width) {
 					line += '-';
 				}
-				printWorldLineInternal(line);
+				printWorldLine(line);
 			}
 
 			if (stepCount == 0) {
