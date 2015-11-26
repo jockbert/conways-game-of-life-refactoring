@@ -6,6 +6,7 @@ import gol.output.OutputFormat;
 import gol.output.SpacedAtFormat;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -98,45 +99,15 @@ public class GameOfLife {
 					game.steps = getIntArg(argList);
 				} else if ("-f".equals(arg)) {
 					String filePath = getArg(argList);
-					File file = new File(filePath);
-					@SuppressWarnings("resource")
-					Scanner scanner = new Scanner(file);
-					ArrayList<String> world = new ArrayList<String>();
+					List<String> world = readWorldFile(game, filePath);
 					game.world = world;
-					int lineNumber = 1;
-					int maxWidth = 0;
-					while (scanner.hasNextLine()) {
-						String line = scanner.nextLine();
-						Pattern pattern = Pattern.compile("[^#-]");
-						Matcher matcher = pattern.matcher(line);
-						if (matcher.find()) {
-							scanner.close();
-							throw new RuntimeException("Invalid character '"
-									+ matcher.group() + "' on line "
-									+ lineNumber + " in file " + filePath);
-						}
-
-						maxWidth = Math.max(maxWidth, line.length());
-
-						world.add(line);
-						game.world = world;
-						lineNumber++;
-					}
-
-					for (int i = 0; i < world.size(); ++i) {
-						String line = world.get(i);
-
-						while (line.length() < maxWidth)
-							line += '-';
-
-						world.set(i, line);
-					}
 
 					if (game.height == -1)
 						game.height = world.size();
 					if (game.width == -1)
 						game.width = world.isEmpty() ? 0 : world.get(0)
 								.length();
+
 				} else if ("-?".equals(arg)) {
 					throw new Exception("Help requested");
 				} else if ("-@".equals(arg)) {
@@ -174,7 +145,6 @@ public class GameOfLife {
 					game.world.add(line);
 
 				}
-
 			}
 
 			if (game.steps == -1)
@@ -202,6 +172,42 @@ public class GameOfLife {
 			line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
 		}
 
+	}
+
+	private static ArrayList<String> readWorldFile(GameOfLife game,
+			String filePath) throws FileNotFoundException {
+		File file = new File(filePath);
+		Scanner scanner = new Scanner(file);
+		ArrayList<String> world = new ArrayList<String>();
+		int lineNumber = 1;
+		int maxWidth = 0;
+		while (scanner.hasNextLine()) {
+			String line = scanner.nextLine();
+			Pattern pattern = Pattern.compile("[^#-]");
+			Matcher matcher = pattern.matcher(line);
+			if (matcher.find()) {
+				scanner.close();
+				throw new RuntimeException("Invalid character '"
+						+ matcher.group() + "' on line " + lineNumber
+						+ " in file " + filePath);
+			}
+
+			maxWidth = Math.max(maxWidth, line.length());
+
+			world.add(line);
+			lineNumber++;
+		}
+
+		for (int i = 0; i < world.size(); ++i) {
+			String line = world.get(i);
+
+			while (line.length() < maxWidth)
+				line += '-';
+
+			world.set(i, line);
+		}
+		scanner.close();
+		return world;
 	}
 
 	void printWorldLine(String line) {
