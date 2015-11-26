@@ -71,24 +71,22 @@ public class GameOfLife {
 		}
 	}
 
-	int steps = -1;
-	List<String> world = null;
-	int height = -1;
-	int width = -1;
-	int heightOffset = 0;
+	private int steps = -1;
+	private List<String> world = null;
+	private int height = -1;
+	private int width = -1;
+	private int heightOffset = 0;
 	private List<History> history = new LinkedList<History>();
 	private int widthOffset = 0;
-	private static long computationTimeStart;
-	private static int historyLength;
-	private static int stepDelay = -1;
-	private static boolean quietMode = false;
-
-	OutputFormat outputFormat = new DefaultHashDashFormat();
+	private long computationTimeStart;
+	private int historyLength;
+	private int stepDelay = -1;
+	private boolean quietMode = false;
+	private OutputFormat outputFormat = new DefaultHashDashFormat();
 
 	public static void main(String[] args) {
 		GameOfLife game = new GameOfLife();
-
-		computationTimeStart = System.currentTimeMillis();
+		game.computationTimeStart = System.currentTimeMillis();
 
 		try {
 			List<String> argList = new LinkedList<String>(Arrays.asList(args));
@@ -119,11 +117,11 @@ public class GameOfLife {
 				} else if ("-h".equals(arg))
 					game.height = getIntArg(argList);
 				else if ("-l".equals(arg))
-					historyLength = getIntArg(argList);
+					game.historyLength = getIntArg(argList);
 				else if ("-t".equals(arg))
-					stepDelay = getIntArg(argList);
+					game.stepDelay = getIntArg(argList);
 				else if ("-q".equals(arg)) {
-					quietMode = true;
+					game.quietMode = true;
 
 				} else
 					throw new Exception("Unknown argument " + arg);
@@ -145,6 +143,7 @@ public class GameOfLife {
 					game.world.add(line);
 
 				}
+
 			}
 
 			if (game.steps == -1)
