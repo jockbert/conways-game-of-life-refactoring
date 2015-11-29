@@ -65,7 +65,7 @@ public class World {
 		return result;
 	}
 
-	void addMarginsToWorld() {
+	private void addMarginsToWorld() {
 		list.add(emptyLine());
 		list.add(0, emptyLine());
 
@@ -91,7 +91,7 @@ public class World {
 		return list.get(index);
 	}
 
-	void stripMarginsFromWorld() {
+	private void stripMarginsFromWorld() {
 		while (!isEmpty() && list.get(0).equals(emptyLine())) {
 			list.remove(0);
 			heightOffset++;
@@ -116,8 +116,9 @@ public class World {
 		}
 	}
 
-	List<String> nextWorld() {
-		List<String> newWorld = new ArrayList<>();
+	World nextWorld() {
+		addMarginsToWorld();
+		List<String> list = new ArrayList<>();
 
 		for (int h = 0; h < height(); h++) {
 			String line = "";
@@ -137,8 +138,13 @@ public class World {
 
 				line += willLive ? '#' : '-';
 			}
-			newWorld.add(line);
+			list.add(line);
 		}
+		World newWorld = new World(list);
+		newWorld.heightOffset = heightOffset;
+		newWorld.widthOffset = widthOffset;
+		newWorld.stripMarginsFromWorld();
+		this.stripMarginsFromWorld();
 		return newWorld;
 	}
 

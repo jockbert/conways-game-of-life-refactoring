@@ -239,24 +239,12 @@ public class GameOfLife {
 	}
 
 	private void iterateSimulationOneStep() {
-		world.addMarginsToWorld();
+		World oldWorld = world;
+		world = world.nextWorld();
 
-		int newHeightOffset = world.heightOffset;
-		int newWidthtOffset = world.widthOffset;
-
-		List<String> newWorld = world.nextWorld();
-
-		world.stripMarginsFromWorld();
-
-		history.add(0, new History(world.list, world.heightOffset,
-				world.widthOffset));
+		history.add(0, new History(oldWorld.list, oldWorld.heightOffset,
+				oldWorld.widthOffset));
 		if (history.size() == historyLength + 1)
 			history.remove(historyLength);
-
-		world = new World(newWorld);
-		world.heightOffset = newHeightOffset;
-		world.widthOffset = newWidthtOffset;
-
-		world.stripMarginsFromWorld();
 	}
 }
