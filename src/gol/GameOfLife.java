@@ -39,7 +39,7 @@ public class GameOfLife {
 	}
 
 	private int steps = -1;
-	private List<String> world = null;
+	private World world = null;
 	private int height = -1;
 	private int width = -1;
 	private int heightOffset = 0;
@@ -64,14 +64,12 @@ public class GameOfLife {
 					game.steps = getIntArg(argList);
 				} else if ("-f".equals(arg)) {
 					String filePath = getArg(argList);
-					List<String> world = readWorldFile(game, filePath);
-					game.world = world;
+					game.world = new World(readWorldFile(game, filePath));
 
 					if (game.height == -1)
-						game.height = world.size();
+						game.height = game.world.height();
 					if (game.width == -1)
-						game.width = world.isEmpty() ? 0 : world.get(0)
-								.length();
+						game.width = game.world.width();
 
 				} else if ("-?".equals(arg)) {
 					throw new Exception("Help requested");
@@ -95,7 +93,7 @@ public class GameOfLife {
 			}
 
 			if (game.world == null) {
-				game.world = new ArrayList<String>();
+				game.world = new World();
 
 				game.height = game.height == -1 ? 15 : game.height;
 				game.width = game.width == -1 ? 20 : game.width;
@@ -108,7 +106,6 @@ public class GameOfLife {
 						line += rand.nextBoolean() ? '#' : '-';
 					}
 					game.world.add(line);
-
 				}
 
 			}
@@ -180,86 +177,46 @@ public class GameOfLife {
 		StringBuilder result = new StringBuilder();
 
 		for (char c : line.toCharArray())
-			result.append(outputFormat.cell(isAlive(c)));
+			result.append(outputFormat.cell(world.isAlive(c)));
 
 		System.out.println(result.toString());
 	}
 
-	public boolean isAlive(int x, int y) {
-		if (x < 0 || y < 0 || y >= world.size())
-			return false;
-
-		String line = world.get(y);
-
-		if (x >= line.length())
-			return false;
-
-		char c = line.charAt(x);
-
-		return isAlive(c);
-	}
-
-	private boolean isAlive(char cell) {
-		return cell == '#';
-	}
-
-	String emptyLine() {
-		if (world.isEmpty())
-			return "";
-		String result = "";
-		while (result.length() < world.get(0).length())
-			result += '-';
-		return result;
-	}
 
 	void addMarginsToWorld() {
-		world.add(emptyLine());
-		world.add(0, emptyLine());
+		world.addMarginsToWorld();
 		heightOffset--;
-
-		for (int i = 0; i < world.size(); i++) {
-			String line = world.get(i);
-			world.set(i, '-' + line + '-');
-		}
 		widthOffset--;
 	}
 
-	boolean isColumnEmpty(int column) {
-
-		for (int i = 0; i < world.size(); i++) {
-			if (world.get(i).charAt(column) == '#')
-				return false;
-		}
-		return true;
-	}
-
 	void stripMarginsFromWorld() {
-		while (!world.isEmpty() && world.get(0).equals(emptyLine())) {
-			world.remove(0);
+		while (!world.list.isEmpty() && world.list.get(0).equals(world.emptyLine())) {
+			world.list.remove(0);
 			heightOffset++;
 		}
 		while (!world.isEmpty()
-				&& world.get(world.size() - 1).equals(emptyLine())) {
-			world.remove(world.size() - 1);
+				&& world.list.get(world.height() - 1).equals(world.emptyLine())) {
+			world.list.remove(world.height() - 1);
 		}
 
-		while (!world.isEmpty() && world.get(0).length() != 0
-				&& isColumnEmpty(0)) {
-			for (int i = 0; i < world.size(); i++) {
-				String line = world.get(i);
-				world.set(i, line.substring(1));
+		while (!world.isEmpty() && world.list.get(0).length() != 0
+				&& world.isColumnEmpty(0)) {
+			for (int i = 0; i < world.height(); i++) {
+				String line = world.list.get(i);
+				world.list.set(i, line.substring(1));
 			}
 			widthOffset++;
 		}
 
-		while (!world.isEmpty() && world.get(0).length() != 0
-				&& isColumnEmpty(world.get(0).length() - 1)) {
-			for (int i = 0; i < world.size(); i++) {
-				String line = world.get(i);
-				world.set(i, line.substring(0, world.get(i).length() - 1));
+		while (!world.isEmpty() && world.width() != 0
+				&& world.isColumnEmpty(world.width() - 1)) {
+			for (int i = 0; i < world.height(); i++) {
+				String line = world.list.get(i);
+				world.list.set(i, line.substring(0, world.list.get(i).length() - 1));
 			}
 		}
 	}
+
 
 	private void runSimulation() {
 
@@ -300,7 +257,7 @@ public class GameOfLife {
 
 		String lineSuffix = "";
 
-		int worldWidth = world.isEmpty() ? 0 : world.get(0).length();
+		int worldWidth = world.isEmpty() ? 0 : world.width();
 		for (int i = 0; i < width - worldWidth - widthOffset; i++) {
 			lineSuffix += '-';
 		}
@@ -317,7 +274,7 @@ public class GameOfLife {
 				printHeight++;
 			}
 
-			for (int i = Math.max(0, -heightOffset); i < world.size(); i++) {
+			for (int i = Math.max(0, -heightOffset); i < world.height(); i++) {
 
 				if (printHeight == height)
 					break;
@@ -355,7 +312,7 @@ public class GameOfLife {
 	}
 
 	private int detectLoop() {
-		History itemToFind = new History(world, heightOffset, widthOffset);
+		History itemToFind = new History(world.list, heightOffset, widthOffset);
 		int index = history.indexOf(itemToFind);
 		return (index != -1) ? index + 1 : NO_LOOP;
 	}
@@ -370,11 +327,11 @@ public class GameOfLife {
 
 		stripMarginsFromWorld();
 
-		history.add(0, new History(world, heightOffset, widthOffset));
+		history.add(0, new History(world.list, heightOffset, widthOffset));
 		if (history.size() == historyLength + 1)
 			history.remove(historyLength);
 
-		world = newWorld;
+		world = new World(newWorld);
 		heightOffset = newHeightOffset;
 		widthOffset = newWidthtOffset;
 
@@ -384,7 +341,7 @@ public class GameOfLife {
 	private List<String> nextWorld() {
 		List<String> newWorld = new ArrayList<>();
 
-		for (int h = 0; h < world.size(); h++) {
+		for (int h = 0; h < world.height(); h++) {
 			String line = "";
 			for (int w = 0; w < world.get(0).length(); w++) {
 
@@ -398,7 +355,7 @@ public class GameOfLife {
 				n += aliveCellsAt(w, h + 1);
 				n += aliveCellsAt(w + 1, h + 1);
 
-				boolean willLive = n == 3 || (n == 2 && isAlive(w, h));
+				boolean willLive = n == 3 || (n == 2 && world.isAlive(w, h));
 
 				line += willLive ? '#' : '-';
 			}
@@ -408,6 +365,6 @@ public class GameOfLife {
 	}
 
 	private int aliveCellsAt(int x, int y) {
-		return isAlive(x, y) ? 1 : 0;
+		return world.isAlive(x, y) ? 1 : 0;
 	}
 }
