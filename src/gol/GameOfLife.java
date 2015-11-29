@@ -244,7 +244,7 @@ public class GameOfLife {
 		int newHeightOffset = world.heightOffset;
 		int newWidthtOffset = world.widthOffset;
 
-		List<String> newWorld = nextWorld();
+		List<String> newWorld = world.nextWorld();
 
 		world.stripMarginsFromWorld();
 
@@ -258,35 +258,5 @@ public class GameOfLife {
 		world.widthOffset = newWidthtOffset;
 
 		world.stripMarginsFromWorld();
-	}
-
-	private List<String> nextWorld() {
-		List<String> newWorld = new ArrayList<>();
-
-		for (int h = 0; h < world.height(); h++) {
-			String line = "";
-			for (int w = 0; w < world.get(0).length(); w++) {
-
-				int n = 0;
-				n += aliveCellsAt(w - 1, h - 1);
-				n += aliveCellsAt(w, h - 1);
-				n += aliveCellsAt(w + 1, h - 1);
-				n += aliveCellsAt(w - 1, h);
-				n += aliveCellsAt(w + 1, h);
-				n += aliveCellsAt(w - 1, h + 1);
-				n += aliveCellsAt(w, h + 1);
-				n += aliveCellsAt(w + 1, h + 1);
-
-				boolean willLive = n == 3 || (n == 2 && world.isAlive(w, h));
-
-				line += willLive ? '#' : '-';
-			}
-			newWorld.add(line);
-		}
-		return newWorld;
-	}
-
-	private int aliveCellsAt(int x, int y) {
-		return world.isAlive(x, y) ? 1 : 0;
 	}
 }

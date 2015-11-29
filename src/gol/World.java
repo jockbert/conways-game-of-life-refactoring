@@ -115,4 +115,34 @@ public class World {
 			}
 		}
 	}
+
+	List<String> nextWorld() {
+		List<String> newWorld = new ArrayList<>();
+
+		for (int h = 0; h < height(); h++) {
+			String line = "";
+			for (int w = 0; w < width(); w++) {
+
+				int n = 0;
+				n += aliveCellsAt(w - 1, h - 1);
+				n += aliveCellsAt(w, h - 1);
+				n += aliveCellsAt(w + 1, h - 1);
+				n += aliveCellsAt(w - 1, h);
+				n += aliveCellsAt(w + 1, h);
+				n += aliveCellsAt(w - 1, h + 1);
+				n += aliveCellsAt(w, h + 1);
+				n += aliveCellsAt(w + 1, h + 1);
+
+				boolean willLive = n == 3 || (n == 2 && isAlive(w, h));
+
+				line += willLive ? '#' : '-';
+			}
+			newWorld.add(line);
+		}
+		return newWorld;
+	}
+
+	private int aliveCellsAt(int x, int y) {
+		return isAlive(x, y) ? 1 : 0;
+	}
 }
