@@ -18,6 +18,10 @@ public class World {
 		this.list = list;
 	}
 
+	boolean isAliveAbsolute(int x, int y) {
+		return isAlive(x-widthOffset,y-heightOffset);
+	}
+
 	boolean isAlive(int x, int y) {
 		if (x < 0 || y < 0 || y >= list.size())
 			return false;

@@ -210,53 +210,11 @@ public class GameOfLife {
 	}
 
 	private void printStep(int stepCount, int loopLength) {
-
-		String linePrefix = "";
-
-		for (int i = 0; i < world.widthOffset; i++) {
-			linePrefix += '-';
-		}
-
-		String lineSuffix = "";
-
-		int worldWidth = world.isEmpty() ? 0 : world.width();
-		for (int i = 0; i < width - worldWidth - world.widthOffset; i++) {
-			lineSuffix += '-';
-		}
-
-		int printHeight = 0;
-
 		if (!quietMode || stepCount == steps || loopLength != NO_LOOP) {
-			for (int i = 0; i < Math.min(world.heightOffset, height); i++) {
+			for (int y = 0; y < height; ++y) {
 				String line = "";
-				while (line.length() < width) {
-					line += '-';
-				}
-				printWorldLine(line);
-				printHeight++;
-			}
-
-			for (int i = Math.max(0, -world.heightOffset); i < world.height(); i++) {
-
-				if (printHeight == height)
-					break;
-				String line = world.get(i);
-
-				line = linePrefix + line + lineSuffix;
-
-				if (world.widthOffset < 0)
-					line = line.substring(-world.widthOffset);
-
-				if (line.length() > width)
-					line = line.substring(0, width);
-				printWorldLine(line);
-				printHeight++;
-			}
-
-			for (; printHeight < height; printHeight++) {
-				String line = "";
-				while (line.length() < width) {
-					line += '-';
+				for (int x = 0; x < width; ++x) {
+					line += world.isAliveAbsolute(x, y) ? '#' : '-';
 				}
 				printWorldLine(line);
 			}
@@ -274,7 +232,8 @@ public class GameOfLife {
 	}
 
 	private int detectLoop() {
-		History itemToFind = new History(world.list, world.heightOffset, world.widthOffset);
+		History itemToFind = new History(world.list, world.heightOffset,
+				world.widthOffset);
 		int index = history.indexOf(itemToFind);
 		return (index != -1) ? index + 1 : NO_LOOP;
 	}
@@ -289,7 +248,8 @@ public class GameOfLife {
 
 		world.stripMarginsFromWorld();
 
-		history.add(0, new History(world.list, world.heightOffset, world.widthOffset));
+		history.add(0, new History(world.list, world.heightOffset,
+				world.widthOffset));
 		if (history.size() == historyLength + 1)
 			history.remove(historyLength);
 
