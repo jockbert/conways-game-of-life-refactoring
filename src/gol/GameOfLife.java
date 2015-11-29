@@ -42,9 +42,7 @@ public class GameOfLife {
 	private World world = null;
 	private int height = -1;
 	private int width = -1;
-	private int heightOffset = 0;
 	private List<History> history = new LinkedList<History>();
-	private int widthOffset = 0;
 	private long computationTimeStart;
 	private int historyLength;
 	private int stepDelay = -1;
@@ -182,42 +180,6 @@ public class GameOfLife {
 		System.out.println(result.toString());
 	}
 
-
-	void addMarginsToWorld() {
-		world.addMarginsToWorld();
-		heightOffset--;
-		widthOffset--;
-	}
-
-	void stripMarginsFromWorld() {
-		while (!world.list.isEmpty() && world.list.get(0).equals(world.emptyLine())) {
-			world.list.remove(0);
-			heightOffset++;
-		}
-		while (!world.isEmpty()
-				&& world.list.get(world.height() - 1).equals(world.emptyLine())) {
-			world.list.remove(world.height() - 1);
-		}
-
-		while (!world.isEmpty() && world.list.get(0).length() != 0
-				&& world.isColumnEmpty(0)) {
-			for (int i = 0; i < world.height(); i++) {
-				String line = world.list.get(i);
-				world.list.set(i, line.substring(1));
-			}
-			widthOffset++;
-		}
-
-		while (!world.isEmpty() && world.width() != 0
-				&& world.isColumnEmpty(world.width() - 1)) {
-			for (int i = 0; i < world.height(); i++) {
-				String line = world.list.get(i);
-				world.list.set(i, line.substring(0, world.list.get(i).length() - 1));
-			}
-		}
-	}
-
-
 	private void runSimulation() {
 
 		for (int stepCount = 0; stepCount <= steps; ++stepCount) {
@@ -251,21 +213,21 @@ public class GameOfLife {
 
 		String linePrefix = "";
 
-		for (int i = 0; i < widthOffset; i++) {
+		for (int i = 0; i < world.widthOffset; i++) {
 			linePrefix += '-';
 		}
 
 		String lineSuffix = "";
 
 		int worldWidth = world.isEmpty() ? 0 : world.width();
-		for (int i = 0; i < width - worldWidth - widthOffset; i++) {
+		for (int i = 0; i < width - worldWidth - world.widthOffset; i++) {
 			lineSuffix += '-';
 		}
 
 		int printHeight = 0;
 
 		if (!quietMode || stepCount == steps || loopLength != NO_LOOP) {
-			for (int i = 0; i < Math.min(heightOffset, height); i++) {
+			for (int i = 0; i < Math.min(world.heightOffset, height); i++) {
 				String line = "";
 				while (line.length() < width) {
 					line += '-';
@@ -274,7 +236,7 @@ public class GameOfLife {
 				printHeight++;
 			}
 
-			for (int i = Math.max(0, -heightOffset); i < world.height(); i++) {
+			for (int i = Math.max(0, -world.heightOffset); i < world.height(); i++) {
 
 				if (printHeight == height)
 					break;
@@ -282,8 +244,8 @@ public class GameOfLife {
 
 				line = linePrefix + line + lineSuffix;
 
-				if (widthOffset < 0)
-					line = line.substring(-widthOffset);
+				if (world.widthOffset < 0)
+					line = line.substring(-world.widthOffset);
 
 				if (line.length() > width)
 					line = line.substring(0, width);
@@ -312,30 +274,30 @@ public class GameOfLife {
 	}
 
 	private int detectLoop() {
-		History itemToFind = new History(world.list, heightOffset, widthOffset);
+		History itemToFind = new History(world.list, world.heightOffset, world.widthOffset);
 		int index = history.indexOf(itemToFind);
 		return (index != -1) ? index + 1 : NO_LOOP;
 	}
 
 	private void iterateSimulationOneStep() {
-		addMarginsToWorld();
+		world.addMarginsToWorld();
 
-		int newHeightOffset = heightOffset;
-		int newWidthtOffset = widthOffset;
+		int newHeightOffset = world.heightOffset;
+		int newWidthtOffset = world.widthOffset;
 
 		List<String> newWorld = nextWorld();
 
-		stripMarginsFromWorld();
+		world.stripMarginsFromWorld();
 
-		history.add(0, new History(world.list, heightOffset, widthOffset));
+		history.add(0, new History(world.list, world.heightOffset, world.widthOffset));
 		if (history.size() == historyLength + 1)
 			history.remove(historyLength);
 
 		world = new World(newWorld);
-		heightOffset = newHeightOffset;
-		widthOffset = newWidthtOffset;
+		world.heightOffset = newHeightOffset;
+		world.widthOffset = newWidthtOffset;
 
-		stripMarginsFromWorld();
+		world.stripMarginsFromWorld();
 	}
 
 	private List<String> nextWorld() {
