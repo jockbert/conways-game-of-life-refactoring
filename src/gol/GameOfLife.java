@@ -47,7 +47,7 @@ public class GameOfLife {
 					game.steps = getIntArg(argList);
 				} else if ("-f".equals(arg)) {
 					String filePath = getArg(argList);
-					game.world = new World(readWorldFile(game, filePath));
+					game.world = new LineWorld(readWorldFile(game, filePath));
 
 					if (game.height == -1)
 						game.height = game.world.height();
@@ -91,7 +91,7 @@ public class GameOfLife {
 					lines.add(line);
 				}
 
-				game.world = new World(lines);
+				game.world = new LineWorld(lines);
 			}
 
 			if (game.steps == -1)
