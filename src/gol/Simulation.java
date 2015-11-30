@@ -5,6 +5,7 @@ import gol.output.OutputFormat;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 public class Simulation {
 
@@ -20,7 +21,7 @@ public class Simulation {
 	boolean quietMode = false;
 	OutputFormat outputFormat = new DefaultHashDashFormat();
 
-	private List<History> history = new LinkedList<History>();
+	private List<Set<Cell>> history = new LinkedList<>();
 
 	private void printWorldLine(String line) {
 		StringBuilder result = new StringBuilder();
@@ -83,7 +84,7 @@ public class Simulation {
 	}
 
 	private int detectLoop() {
-		History itemToFind = world.getHistory();
+		Set<Cell> itemToFind = world.getAliveCells();
 		int index = history.indexOf(itemToFind);
 		return (index != -1) ? index + 1 : NO_LOOP;
 	}
@@ -92,7 +93,7 @@ public class Simulation {
 		World oldWorld = world;
 		world = world.nextWorld();
 
-		history.add(0, oldWorld.getHistory());
+		history.add(0, oldWorld.getAliveCells());
 		if (history.size() == historyLength + 1)
 			history.remove(historyLength);
 	}

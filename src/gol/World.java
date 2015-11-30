@@ -1,7 +1,9 @@
 package gol;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class World {
 
@@ -18,12 +20,22 @@ public class World {
 		this.list = list;
 	}
 
-	History getHistory() {
-		return new History(list, heightOffset, widthOffset);
-	}
-
 	boolean isAliveAbsolute(int x, int y) {
 		return isAliveRelativeOffset(x - widthOffset, y - heightOffset);
+	}
+
+	Set<Cell> getAliveCells() {
+		Set<Cell> result = new HashSet<Cell>();
+
+		for(int y = 0; y < height(); ++y) {
+			String line = list.get(y);
+			for(int x = 0; x < width(); ++x) {
+				if (isAlive(line.charAt(x)))
+					result.add(new Cell(x+widthOffset,y+heightOffset));
+			}
+		}
+
+		return result;
 	}
 
 	private boolean isAliveRelativeOffset(int x, int y) {
