@@ -76,10 +76,10 @@ public class GameOfLife {
 			}
 
 			if (game.world == null) {
-				game.world = new World();
-
 				game.height = game.height == -1 ? 15 : game.height;
 				game.width = game.width == -1 ? 20 : game.width;
+
+				List<String> lines = new ArrayList<>();
 
 				Random rand = new Random();
 				for (int h = 0; h < game.height; h++) {
@@ -88,9 +88,10 @@ public class GameOfLife {
 
 						line += rand.nextBoolean() ? '#' : '-';
 					}
-					game.world.add(line);
+					lines.add(line);
 				}
 
+				game.world = new World(lines);
 			}
 
 			if (game.steps == -1)

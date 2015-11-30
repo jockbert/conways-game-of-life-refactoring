@@ -26,7 +26,7 @@ public class Simulation {
 		StringBuilder result = new StringBuilder();
 
 		for (char c : line.toCharArray())
-			result.append(outputFormat.cell(world.isAlive(c)));
+			result.append(outputFormat.cell(c == '#'));
 
 		System.out.println(result.toString());
 	}
@@ -83,8 +83,7 @@ public class Simulation {
 	}
 
 	private int detectLoop() {
-		History itemToFind = new History(world.list, world.heightOffset,
-				world.widthOffset);
+		History itemToFind = world.getHistory();
 		int index = history.indexOf(itemToFind);
 		return (index != -1) ? index + 1 : NO_LOOP;
 	}
@@ -93,8 +92,7 @@ public class Simulation {
 		World oldWorld = world;
 		world = world.nextWorld();
 
-		history.add(0, new History(oldWorld.list, oldWorld.heightOffset,
-				oldWorld.widthOffset));
+		history.add(0, oldWorld.getHistory());
 		if (history.size() == historyLength + 1)
 			history.remove(historyLength);
 	}

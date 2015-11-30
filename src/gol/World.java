@@ -5,10 +5,10 @@ import java.util.List;
 
 public class World {
 
-	List<String> list;
+	private List<String> list;
 
-	int heightOffset = 0;
-	int widthOffset = 0;
+	private int heightOffset = 0;
+	private int widthOffset = 0;
 
 	World() {
 		this.list = new ArrayList<String>();
@@ -18,11 +18,15 @@ public class World {
 		this.list = list;
 	}
 
-	boolean isAliveAbsolute(int x, int y) {
-		return isAlive(x-widthOffset,y-heightOffset);
+	History getHistory() {
+		return new History(list, heightOffset, widthOffset);
 	}
 
-	boolean isAlive(int x, int y) {
+	boolean isAliveAbsolute(int x, int y) {
+		return isAliveRelativeOffset(x - widthOffset, y - heightOffset);
+	}
+
+	private boolean isAliveRelativeOffset(int x, int y) {
 		if (x < 0 || y < 0 || y >= list.size())
 			return false;
 
@@ -36,7 +40,7 @@ public class World {
 		return isAlive(c);
 	}
 
-	boolean isAlive(char cell) {
+	private boolean isAlive(char cell) {
 		return cell == '#';
 	}
 
@@ -48,15 +52,11 @@ public class World {
 		return list.isEmpty() ? 0 : list.get(0).length();
 	}
 
-	boolean isEmpty() {
+	private boolean isEmpty() {
 		return list.isEmpty();
 	}
 
-	void add(String line) {
-		list.add(line);
-	}
-
-	String emptyLine() {
+	private String emptyLine() {
 		if (isEmpty())
 			return "";
 		String result = "";
@@ -78,17 +78,13 @@ public class World {
 		widthOffset--;
 	}
 
-	boolean isColumnEmpty(int column) {
+	private boolean isColumnEmpty(int column) {
 
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).charAt(column) == '#')
 				return false;
 		}
 		return true;
-	}
-
-	String get(int index) {
-		return list.get(index);
 	}
 
 	private void stripMarginsFromWorld() {
@@ -134,7 +130,7 @@ public class World {
 				n += aliveCellsAt(w, h + 1);
 				n += aliveCellsAt(w + 1, h + 1);
 
-				boolean willLive = n == 3 || (n == 2 && isAlive(w, h));
+				boolean willLive = n == 3 || (n == 2 && isAliveRelativeOffset(w, h));
 
 				line += willLive ? '#' : '-';
 			}
@@ -149,6 +145,6 @@ public class World {
 	}
 
 	private int aliveCellsAt(int x, int y) {
-		return isAlive(x, y) ? 1 : 0;
+		return isAliveRelativeOffset(x, y) ? 1 : 0;
 	}
 }
