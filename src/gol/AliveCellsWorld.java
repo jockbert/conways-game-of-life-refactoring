@@ -1,5 +1,7 @@
 package gol;
 
+import static gol.Cell.cell;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -9,9 +11,9 @@ import java.util.stream.Stream;
 
 public class AliveCellsWorld implements World {
 
-	private final static List<Cell> ALL_DIRECTIONS = Arrays.asList(new Cell(-1,
-			-1), new Cell(-1, 0), new Cell(-1, 1), new Cell(1, -1), new Cell(1,
-			0), new Cell(1, 1), new Cell(0, -1), new Cell(0, 1));
+	private final static List<Cell> ALL_DIRECTIONS = Arrays.asList(
+			cell(-1, -1), cell(-1, 0), cell(-1, 1), cell(1, -1), cell(1, 0),
+			cell(1, 1), cell(0, -1), cell(0, 1));
 
 	private final Set<Cell> aliveCells;
 
@@ -24,7 +26,7 @@ public class AliveCellsWorld implements World {
 	}
 
 	public static Set<Cell> getAliveCells(List<String> lines) {
-		Set<Cell> result = new HashSet<Cell>();
+		Set<Cell> result = new HashSet<>();
 
 		int height = lines.size();
 		int width = lines.isEmpty() ? 0 : lines.get(0).length();
@@ -33,7 +35,7 @@ public class AliveCellsWorld implements World {
 			String line = lines.get(y);
 			for (int x = 0; x < width; ++x) {
 				if (line.charAt(x) == '#')
-					result.add(new Cell(x, y));
+					result.add(cell(x, y));
 			}
 		}
 
@@ -42,7 +44,7 @@ public class AliveCellsWorld implements World {
 
 	@Override
 	public boolean isAlive(int x, int y) {
-		return isAlive(new Cell(x, y));
+		return isAlive(cell(x, y));
 	}
 
 	private boolean isAlive(Cell c) {
@@ -51,7 +53,7 @@ public class AliveCellsWorld implements World {
 
 	@Override
 	public Set<Cell> getAliveCells() {
-		return new HashSet<Cell>(aliveCells);
+		return new HashSet<>(aliveCells);
 	}
 
 	@Override
