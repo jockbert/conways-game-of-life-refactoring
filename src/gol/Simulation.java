@@ -66,7 +66,7 @@ public class Simulation {
 			for (int y = 0; y < height; ++y) {
 				String line = "";
 				for (int x = 0; x < width; ++x) {
-					line += world.isAliveAbsolute(x, y) ? '#' : '-';
+					line += world.isAlive(x, y) ? '#' : '-';
 				}
 				printWorldLine(line);
 			}

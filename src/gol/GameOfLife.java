@@ -47,12 +47,14 @@ public class GameOfLife {
 					game.steps = getIntArg(argList);
 				} else if ("-f".equals(arg)) {
 					String filePath = getArg(argList);
-					game.world = new LineWorld(readWorldFile(game, filePath));
+					List<String> lines = readWorldFile(game, filePath);
 
 					if (game.height == -1)
-						game.height = game.world.height();
+						game.height = lines.size();
 					if (game.width == -1)
-						game.width = game.world.width();
+						game.width = lines.isEmpty()? 0 : lines.get(0).length();
+
+					game.world = new LineWorld(lines);
 
 				} else if ("-?".equals(arg)) {
 					throw new Exception("Help requested");

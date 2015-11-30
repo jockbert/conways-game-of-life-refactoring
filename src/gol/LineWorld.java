@@ -21,7 +21,7 @@ public class LineWorld implements World {
 	}
 
 	@Override
-	public boolean isAliveAbsolute(int x, int y) {
+	public boolean isAlive(int x, int y) {
 		return isAliveRelativeOffset(x - widthOffset, y - heightOffset);
 	}
 
@@ -58,13 +58,11 @@ public class LineWorld implements World {
 		return cell == '#';
 	}
 
-	@Override
-	public int height() {
+	private int height() {
 		return list.size();
 	}
 
-	@Override
-	public int width() {
+	private int width() {
 		return list.isEmpty() ? 0 : list.get(0).length();
 	}
 
