@@ -12,10 +12,6 @@ public class LineWorld implements World {
 	private int heightOffset = 0;
 	private int widthOffset = 0;
 
-	public LineWorld() {
-		this.list = new ArrayList<String>();
-	}
-
 	public LineWorld(List<String> list) {
 		this.list = list;
 	}
