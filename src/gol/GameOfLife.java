@@ -54,7 +54,7 @@ public class GameOfLife {
 					if (game.width == -1)
 						game.width = lines.isEmpty()? 0 : lines.get(0).length();
 
-					game.world = new LineWorld(lines);
+					game.world = new AliveCellsWorld(lines);
 
 				} else if ("-?".equals(arg)) {
 					throw new Exception("Help requested");
@@ -93,7 +93,7 @@ public class GameOfLife {
 					lines.add(line);
 				}
 
-				game.world = new LineWorld(lines);
+				game.world = new AliveCellsWorld(lines);
 			}
 
 			if (game.steps == -1)
