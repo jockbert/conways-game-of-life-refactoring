@@ -15,11 +15,10 @@ public class Simulation {
 	World world = null;
 	int height = -1;
 	int width = -1;
-	long computationTimeStart;
 	int historyLength;
-	int stepDelay = -1;
 	boolean quietMode = false;
 	OutputFormat outputFormat = new DefaultHashDashFormat();
+	PeriodicBlocker periodicBlocker = PeriodicBlocker.DefaultNoPeriod();
 
 	private List<Set<Cell>> history = new LinkedList<>();
 
@@ -43,18 +42,7 @@ public class Simulation {
 
 			printStep(stepCount, loopLength);
 
-			long computationTime = System.currentTimeMillis()
-					- computationTimeStart;
-
-			if (!quietMode && stepDelay - computationTime >= 0) {
-				try {
-					Thread.sleep(stepDelay - computationTime);
-				} catch (InterruptedException ex) {
-					Thread.currentThread().interrupt();
-				}
-			}
-
-			computationTimeStart = System.currentTimeMillis();
+			periodicBlocker.blockRestOfPeriodAndRestart();
 
 			if (loopLength != NO_LOOP)
 				break;

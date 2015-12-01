@@ -24,7 +24,6 @@ public class GameOfLife {
 
 		try {
 			Simulation game = new Simulation();
-			game.computationTimeStart = System.currentTimeMillis();
 			parseArguments(args, game);
 
 			game.height = game.height == -1 ? 15 : game.height;
@@ -87,10 +86,11 @@ public class GameOfLife {
 				game.historyLength = nextArgAsInt(argIterator);
 				break;
 			case "-t":
-				game.stepDelay = nextArgAsInt(argIterator);
+				game.periodicBlocker.setPeriod(nextArgAsInt(argIterator));
 				break;
 			case "-q":
 				game.quietMode = true;
+				game.periodicBlocker = PeriodicBlocker.Null();
 				break;
 			default:
 				throw new Exception("Unknown argument " + arg);
