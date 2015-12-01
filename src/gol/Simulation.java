@@ -18,15 +18,21 @@ public class Simulation {
 
 	void runSimulation() {
 
-		for (int stepCount = 0; stepCount <= steps; ++stepCount) {
+		loopDetector.addSimulationStepAndDetect(world);
+		printStep("start", 0, OptionalInt.empty());
+		periodicBlocker.blockRestOfPeriodAndRestart();
 
-			if (stepCount != 0)
-				world = world.nextWorld();
+		for (int stepCount = 1; stepCount <= steps; ++stepCount) {
+
+			world = world.nextWorld();
 
 			OptionalInt loop = loopDetector.addSimulationStepAndDetect(world);
 
-			printStep(stepCount, loop);
+			String loopText = loop.isPresent() ? " - loop of length "
+					+ loop.getAsInt() + " detected" : "";
+			String stepTitle = "step " + stepCount + loopText;
 
+			printStep(stepTitle, stepCount, loop);
 			periodicBlocker.blockRestOfPeriodAndRestart();
 
 			if (loop.isPresent())
@@ -34,7 +40,7 @@ public class Simulation {
 		}
 	}
 
-	private void printStep(int stepCount, OptionalInt loop) {
+	private void printStep(String title, int stepCount, OptionalInt loop) {
 		if (!quietMode || stepCount == steps || loop.isPresent()) {
 			for (int y = 0; y < height; ++y) {
 				String line = "";
@@ -44,13 +50,7 @@ public class Simulation {
 				System.out.println(line);
 			}
 
-			if (stepCount == 0) {
-				System.out.println("start");
-			} else {
-				String loopText = loop.isPresent() ? " - loop of length " + loop.getAsInt() + " detected": "";
-
-				System.out.println("step " + stepCount + loopText);
-			}
+			System.out.println(title);
 			System.out.println();
 		}
 	}
