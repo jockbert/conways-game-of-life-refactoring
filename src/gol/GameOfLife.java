@@ -7,7 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -20,15 +20,8 @@ public class GameOfLife {
 		System.out.println(s);
 	}
 
-	static String getArg(List<String> argList) {
-		String arg = argList.get(0);
-		argList.remove(0);
-		return arg;
-	}
-
-	static int getIntArg(List<String> argList) {
-		String arg = getArg(argList);
-		int n = Integer.parseInt(arg);
+	static int nextArgAsInt(Iterator<String> args) {
+		int n = Integer.parseInt(args.next());
 		if (n < 0)
 			throw new RuntimeException("Invalid argument value " + n);
 		return n;
@@ -39,14 +32,15 @@ public class GameOfLife {
 		game.computationTimeStart = System.currentTimeMillis();
 
 		try {
-			List<String> argList = new LinkedList<String>(Arrays.asList(args));
-			while (argList.size() > 0) {
-				String arg = argList.get(0);
-				argList.remove(0);
+			Iterator<String> argIterator = Arrays.asList(args).iterator();
+
+			while (argIterator.hasNext()) {
+				String arg = argIterator.next();
+
 				if ("-s".equals(arg)) {
-					game.steps = getIntArg(argList);
+					game.steps = nextArgAsInt(argIterator);
 				} else if ("-f".equals(arg)) {
-					String filePath = getArg(argList);
+					String filePath = argIterator.next();
 					List<String> lines = readWorldFile(game, filePath);
 
 					if (game.height == -1)
@@ -63,13 +57,13 @@ public class GameOfLife {
 				} else if ("-O".equals(arg)) {
 					game.outputFormat = new BigOFormat();
 				} else if (arg.equals("-w")) {
-					game.width = getIntArg(argList);
+					game.width = nextArgAsInt(argIterator);
 				} else if ("-h".equals(arg))
-					game.height = getIntArg(argList);
+					game.height = nextArgAsInt(argIterator);
 				else if ("-l".equals(arg))
-					game.historyLength = getIntArg(argList);
+					game.historyLength = nextArgAsInt(argIterator);
 				else if ("-t".equals(arg))
-					game.stepDelay = getIntArg(argList);
+					game.stepDelay = nextArgAsInt(argIterator);
 				else if ("-q".equals(arg)) {
 					game.quietMode = true;
 
