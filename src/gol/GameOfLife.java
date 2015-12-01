@@ -28,58 +28,12 @@ public class GameOfLife {
 	}
 
 	public static void main(String[] args) {
-		Simulation game = new Simulation();
-		game.computationTimeStart = System.currentTimeMillis();
 
 		try {
-			Iterator<String> argIterator = Arrays.asList(args).iterator();
+			Simulation game = new Simulation();
+			game.computationTimeStart = System.currentTimeMillis();
+			parseArguments(args, game);
 
-			while (argIterator.hasNext()) {
-
-				String arg = argIterator.next();
-				switch (arg) {
-				case "-s":
-					game.steps = nextArgAsInt(argIterator);
-					break;
-				case "-f":
-					String filePath = argIterator.next();
-					List<String> lines = readWorldFile(game, filePath);
-
-					if (game.height == -1)
-						game.height = lines.size();
-					if (game.width == -1)
-						game.width = lines.isEmpty() ? 0 : lines.get(0)
-								.length();
-
-					game.world = new AliveCellsWorld(lines);
-					break;
-				case "-?":
-					throw new Exception("Help requested");
-				case "-@":
-					game.outputFormat = new SpacedAtFormat();
-					break;
-				case "-O":
-					game.outputFormat = new BigOFormat();
-					break;
-				case "-w":
-					game.width = nextArgAsInt(argIterator);
-					break;
-				case "-h":
-					game.height = nextArgAsInt(argIterator);
-					break;
-				case "-l":
-					game.historyLength = nextArgAsInt(argIterator);
-					break;
-				case "-t":
-					game.stepDelay = nextArgAsInt(argIterator);
-					break;
-				case "-q":
-					game.quietMode = true;
-					break;
-				default:
-					throw new Exception("Unknown argument " + arg);
-				}
-			}
 
 			if (game.world == null) {
 				game.height = game.height == -1 ? 15 : game.height;
@@ -109,6 +63,58 @@ public class GameOfLife {
 			printHelp(e.getMessage());
 		}
 
+	}
+
+	private static void parseArguments(String[] args, Simulation game)
+			throws Exception {
+
+		Iterator<String> argIterator = Arrays.asList(args).iterator();
+
+		while (argIterator.hasNext()) {
+
+			String arg = argIterator.next();
+			switch (arg) {
+			case "-s":
+				game.steps = nextArgAsInt(argIterator);
+				break;
+			case "-f":
+				String filePath = argIterator.next();
+				List<String> lines = readWorldFile(game, filePath);
+
+				if (game.height == -1)
+					game.height = lines.size();
+				if (game.width == -1)
+					game.width = lines.isEmpty() ? 0 : lines.get(0).length();
+
+				game.world = new AliveCellsWorld(lines);
+				break;
+			case "-?":
+				throw new Exception("Help requested");
+			case "-@":
+				game.outputFormat = new SpacedAtFormat();
+				break;
+			case "-O":
+				game.outputFormat = new BigOFormat();
+				break;
+			case "-w":
+				game.width = nextArgAsInt(argIterator);
+				break;
+			case "-h":
+				game.height = nextArgAsInt(argIterator);
+				break;
+			case "-l":
+				game.historyLength = nextArgAsInt(argIterator);
+				break;
+			case "-t":
+				game.stepDelay = nextArgAsInt(argIterator);
+				break;
+			case "-q":
+				game.quietMode = true;
+				break;
+			default:
+				throw new Exception("Unknown argument " + arg);
+			}
+		}
 	}
 
 	private static void printHelp(String message) {
