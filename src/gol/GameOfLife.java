@@ -34,35 +34,34 @@ public class GameOfLife {
 			game.computationTimeStart = System.currentTimeMillis();
 			parseArguments(args, game);
 
+			game.height = game.height == -1 ? 15 : game.height;
+			game.width = game.width == -1 ? 20 : game.width;
+			game.steps = game.steps == -1 ? 100 : game.steps;
 
-			if (game.world == null) {
-				game.height = game.height == -1 ? 15 : game.height;
-				game.width = game.width == -1 ? 20 : game.width;
-
-				List<String> lines = new ArrayList<>();
-
-				Random rand = new Random();
-				for (int h = 0; h < game.height; h++) {
-					String line = "";
-					for (int w = 0; w < game.width; w++) {
-
-						line += rand.nextBoolean() ? '#' : '-';
-					}
-					lines.add(line);
-				}
-
-				game.world = new AliveCellsWorld(lines);
-			}
-
-			if (game.steps == -1)
-				game.steps = 100;
+			game.world = game.world == null ? createRandomWorld(game.width,
+					game.height) : game.world;
 
 			game.runSimulation();
 
 		} catch (Exception e) {
 			printHelp(e.getMessage());
 		}
+	}
 
+	private static World createRandomWorld(int width, int height) {
+		List<String> lines = new ArrayList<>();
+
+		Random rand = new Random();
+		for (int h = 0; h < height; h++) {
+			String line = "";
+			for (int w = 0; w < width; w++) {
+
+				line += rand.nextBoolean() ? '#' : '-';
+			}
+			lines.add(line);
+		}
+
+		return new AliveCellsWorld(lines);
 	}
 
 	private static void parseArguments(String[] args, Simulation game)
