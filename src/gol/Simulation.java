@@ -22,15 +22,6 @@ public class Simulation {
 
 	private List<Set<Cell>> history = new LinkedList<>();
 
-	private void printWorldLine(String line) {
-		StringBuilder result = new StringBuilder();
-
-		for (char c : line.toCharArray())
-			result.append(outputFormat.cell(c == '#'));
-
-		System.out.println(result.toString());
-	}
-
 	void runSimulation() {
 
 		for (int stepCount = 0; stepCount <= steps; ++stepCount) {
@@ -54,9 +45,9 @@ public class Simulation {
 			for (int y = 0; y < height; ++y) {
 				String line = "";
 				for (int x = 0; x < width; ++x) {
-					line += world.isAlive(x, y) ? '#' : '-';
+					line += outputFormat.cell(world.isAlive(x, y));
 				}
-				printWorldLine(line);
+				System.out.println(line);
 			}
 
 			if (stepCount == 0) {
