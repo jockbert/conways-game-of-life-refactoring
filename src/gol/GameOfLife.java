@@ -78,7 +78,7 @@ public class GameOfLife {
 				break;
 			case "-f":
 				String filePath = argIterator.next();
-				List<String> lines = readWorldFile(game, filePath);
+				List<String> lines = readWorldFile(filePath);
 
 				if (game.height == -1)
 					game.height = lines.size();
@@ -136,8 +136,8 @@ public class GameOfLife {
 		line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
 	}
 
-	private static ArrayList<String> readWorldFile(Simulation game,
-			String filePath) throws FileNotFoundException {
+	private static ArrayList<String> readWorldFile(String filePath)
+			throws FileNotFoundException {
 		File file = new File(filePath);
 		Scanner scanner = new Scanner(file);
 		ArrayList<String> world = new ArrayList<String>();
