@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 public class FileWorldSource implements WorldSource {
 
 	private String filePath;
+	private Pattern pattern = Pattern.compile("[^#-]");
 
 	public FileWorldSource(String filePath) {
 		this.filePath = filePath;
@@ -19,6 +20,9 @@ public class FileWorldSource implements WorldSource {
 	@Override
 	public WorldSourceResult generate() {
 		final List<String> lines = readWorldFile();
+		ensureAllLinesHasValidCharacters(lines);
+		ensureAllLinesHasTheSameWidth(lines);
+
 		return new WorldSourceResult() {
 			@Override
 			public World world() {
@@ -37,48 +41,62 @@ public class FileWorldSource implements WorldSource {
 		};
 	}
 
-	private ArrayList<String> readWorldFile() {
-		Scanner scanner;
+	private List<String> readWorldFile() {
+		Scanner scanner = openScanner();
+		List<String> lines;
 		try {
-			File file = new File(filePath);
-			scanner = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e.getMessage());
+			lines = scanAllLines(scanner);
+		} finally {
+			scanner.close();
 		}
-
-		ArrayList<String> lines = new ArrayList<String>();
-		int maxWidth = 0;
-		for (int lineNumber = 1; scanner.hasNextLine(); lineNumber++) {
-			String line = scanner.nextLine();
-			Pattern pattern = Pattern.compile("[^#-]");
-			Matcher matcher = pattern.matcher(line);
-			if (matcher.find()) {
-				scanner.close();
-				throw new RuntimeException("Invalid character '"
-						+ matcher.group() + "' on line " + lineNumber
-						+ " in file " + filePath);
-			}
-
-			maxWidth = Math.max(maxWidth, line.length());
-
-			lines.add(line);
-		}
-
-		ensureThatAllLinesHasTheSameWidth(lines, maxWidth);
-
-		scanner.close();
 		return lines;
 	}
 
-	private void ensureThatAllLinesHasTheSameWidth(ArrayList<String> lines,
-			int maxWidth) {
+	private List<String> scanAllLines(Scanner scanner) {
+		List<String> lines = new ArrayList<String>();
+		while (scanner.hasNextLine())
+			lines.add(scanner.nextLine());
+
+		return lines;
+	}
+
+	private Scanner openScanner() {
+		try {
+			return new Scanner(new File(filePath));
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e.getMessage());
+		}
+	}
+
+	private void ensureAllLinesHasValidCharacters(List<String> lines) {
+		for (int i = 0; i < lines.size(); ++i)
+			ensureValidCharacters(i+1, lines.get(i));
+	}
+
+	private void ensureValidCharacters(int lineNumber, String line) {
+		Matcher matcher = pattern.matcher(line);
+		if (matcher.find()) {
+			String match = matcher.group();
+			String format = "Invalid character '%s' on line %s in file %s";
+			String message = String.format(format, match, lineNumber, filePath);
+			throw new RuntimeException(message);
+		}
+	}
+
+	private void ensureAllLinesHasTheSameWidth(List<String> lines) {
+		int width = maxWidth(lines);
 		for (int i = 0; i < lines.size(); ++i) {
 			String line = lines.get(i);
-
-			while (line.length() < maxWidth)
+			while (line.length() < width)
 				line += '-';
-
 			lines.set(i, line);
 		}
+	}
+
+	private int maxWidth(List<String> lines) {
+		int maxWidth = 0;
+		for (String line : lines)
+			maxWidth = Math.max(maxWidth, line.length());
+		return maxWidth;
 	}
 }
