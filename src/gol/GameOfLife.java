@@ -4,11 +4,8 @@ import gol.WorldSource.WorldSourceResult;
 import gol.output.BigOFormat;
 import gol.output.SpacedAtFormat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
 
 public class GameOfLife {
 
@@ -34,30 +31,18 @@ public class GameOfLife {
 			game.width = game.width == -1 ? 20 : game.width;
 			game.steps = game.steps == -1 ? 100 : game.steps;
 
-			game.world = game.world == null ? createRandomWorld(game.width,
-					game.height) : game.world;
+			if (game.world == null) {
+				WorldSource source = new RandomWorldSource(game.width,
+						game.height);
+				WorldSourceResult result = source.generate();
+				game.world = result.world();
+			}
 
 			game.runSimulation();
 
 		} catch (Exception e) {
 			printHelp(e.getMessage());
 		}
-	}
-
-	private static World createRandomWorld(int width, int height) {
-		List<String> lines = new ArrayList<>();
-
-		Random rand = new Random();
-		for (int h = 0; h < height; h++) {
-			String line = "";
-			for (int w = 0; w < width; w++) {
-
-				line += rand.nextBoolean() ? '#' : '-';
-			}
-			lines.add(line);
-		}
-
-		return new AliveCellsWorld(lines);
 	}
 
 	private static void parseArguments(String[] args, Simulation game)
@@ -76,13 +61,13 @@ public class GameOfLife {
 				String filePath = argIterator.next();
 				WorldSource source = new FileWorldSource(filePath);
 				WorldSourceResult result = source.generate();
+				game.world = result.world();
 
 				if (game.height == -1)
 					game.height = result.height();
 				if (game.width == -1)
 					game.width = result.width();
 
-				game.world = result.world();
 				break;
 			case "-?":
 				throw new Exception("Help requested");
