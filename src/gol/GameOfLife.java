@@ -140,10 +140,9 @@ public class GameOfLife {
 			throws FileNotFoundException {
 		File file = new File(filePath);
 		Scanner scanner = new Scanner(file);
-		ArrayList<String> world = new ArrayList<String>();
-		int lineNumber = 1;
+		ArrayList<String> lines = new ArrayList<String>();
 		int maxWidth = 0;
-		while (scanner.hasNextLine()) {
+		for(int lineNumber = 1; scanner.hasNextLine(); lineNumber++) {
 			String line = scanner.nextLine();
 			Pattern pattern = Pattern.compile("[^#-]");
 			Matcher matcher = pattern.matcher(line);
@@ -156,19 +155,18 @@ public class GameOfLife {
 
 			maxWidth = Math.max(maxWidth, line.length());
 
-			world.add(line);
-			lineNumber++;
+			lines.add(line);
 		}
 
-		for (int i = 0; i < world.size(); ++i) {
-			String line = world.get(i);
+		for (int i = 0; i < lines.size(); ++i) {
+			String line = lines.get(i);
 
 			while (line.length() < maxWidth)
 				line += '-';
 
-			world.set(i, line);
+			lines.set(i, line);
 		}
 		scanner.close();
-		return world;
+		return lines;
 	}
 }
