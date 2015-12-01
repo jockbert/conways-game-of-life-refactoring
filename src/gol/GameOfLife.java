@@ -102,25 +102,29 @@ public class GameOfLife {
 			game.runSimulation();
 
 		} catch (Exception e) {
-			line(e.getMessage());
-
-			line("");
-			line("Usage");
-			line(" java gol.GameOfLife [ARGUMENTS...]");
-			line("");
-			line(" arguments:");
-			line("   -?              Prints this usage help.");
-			line("   -w <WIDTH>      Width of simulation view port. Default is 20.");
-			line("   -h <HEIGHT>     Height of simulation view port. Default is 15.");
-			line("   -f <FILE_PATH>  File with start state. Default is a random start state.");
-			line("   -@              Use spaced '@' and '.' instead of default '#' and '-'.");
-			line("   -O              Use 'O' instead of default '#'.");
-			line("   -s <STEPS>      Number of maximum generation steps. Default is 100.");
-			line("   -l <X>          Detect loops of maximum length x. Default is 0 - no loop detection.");
-			line("   -t <MS>         Time delay (ms) to wait between each step. Default is 0 ms.");
-			line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
+			printHelp(e.getMessage());
 		}
 
+	}
+
+	private static void printHelp(String message) {
+		line(message);
+
+		line("");
+		line("Usage");
+		line(" java gol.GameOfLife [ARGUMENTS...]");
+		line("");
+		line(" arguments:");
+		line("   -?              Prints this usage help.");
+		line("   -w <WIDTH>      Width of simulation view port. Default is 20.");
+		line("   -h <HEIGHT>     Height of simulation view port. Default is 15.");
+		line("   -f <FILE_PATH>  File with start state. Default is a random start state.");
+		line("   -@              Use spaced '@' and '.' instead of default '#' and '-'.");
+		line("   -O              Use 'O' instead of default '#'.");
+		line("   -s <STEPS>      Number of maximum generation steps. Default is 100.");
+		line("   -l <X>          Detect loops of maximum length x. Default is 0 - no loop detection.");
+		line("   -t <MS>         Time delay (ms) to wait between each step. Default is 0 ms.");
+		line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
 	}
 
 	private static ArrayList<String> readWorldFile(Simulation game,
