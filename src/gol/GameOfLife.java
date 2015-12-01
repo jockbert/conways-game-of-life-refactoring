@@ -83,7 +83,7 @@ public class GameOfLife {
 				game.height = nextArgAsInt(argIterator);
 				break;
 			case "-l":
-				game.historyLength = nextArgAsInt(argIterator);
+				game.loopDetector = LoopDetector.ofMaxLength(nextArgAsInt(argIterator));
 				break;
 			case "-t":
 				game.periodicBlocker.setPeriod(nextArgAsInt(argIterator));

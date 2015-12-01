@@ -3,45 +3,39 @@ package gol;
 import gol.output.DefaultHashDashFormat;
 import gol.output.OutputFormat;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.OptionalInt;
 
 public class Simulation {
-
-	private static final int NO_LOOP = 0;
 
 	int steps = -1;
 	World world = null;
 	int height = -1;
 	int width = -1;
-	int historyLength;
 	boolean quietMode = false;
 	OutputFormat outputFormat = new DefaultHashDashFormat();
 	PeriodicBlocker periodicBlocker = PeriodicBlocker.defaultWithNoPeriod();
-
-	private List<Set<Cell>> history = new LinkedList<>();
+	LoopDetector loopDetector = LoopDetector.none();
 
 	void runSimulation() {
 
 		for (int stepCount = 0; stepCount <= steps; ++stepCount) {
 
 			if (stepCount != 0)
-				iterateSimulationOneStep();
+				world = world.nextWorld();
 
-			int loopLength = detectLoop();
+			OptionalInt loop = loopDetector.addSimulationStepAndDetect(world);
 
-			printStep(stepCount, loopLength);
+			printStep(stepCount, loop);
 
 			periodicBlocker.blockRestOfPeriodAndRestart();
 
-			if (loopLength != NO_LOOP)
+			if (loop.isPresent())
 				break;
 		}
 	}
 
-	private void printStep(int stepCount, int loopLength) {
-		if (!quietMode || stepCount == steps || loopLength != NO_LOOP) {
+	private void printStep(int stepCount, OptionalInt loop) {
+		if (!quietMode || stepCount == steps || loop.isPresent()) {
 			for (int y = 0; y < height; ++y) {
 				String line = "";
 				for (int x = 0; x < width; ++x) {
@@ -53,27 +47,11 @@ public class Simulation {
 			if (stepCount == 0) {
 				System.out.println("start");
 			} else {
-				String loopText = loopLength == NO_LOOP ? ""
-						: " - loop of length " + loopLength + " detected";
+				String loopText = loop.isPresent() ? " - loop of length " + loop.getAsInt() + " detected": "";
 
 				System.out.println("step " + stepCount + loopText);
 			}
 			System.out.println();
 		}
-	}
-
-	private int detectLoop() {
-		Set<Cell> itemToFind = world.getAliveCells();
-		int index = history.indexOf(itemToFind);
-		return (index != -1) ? index + 1 : NO_LOOP;
-	}
-
-	private void iterateSimulationOneStep() {
-		World oldWorld = world;
-		world = world.nextWorld();
-
-		history.add(0, oldWorld.getAliveCells());
-		if (history.size() == historyLength + 1)
-			history.remove(historyLength);
 	}
 }
