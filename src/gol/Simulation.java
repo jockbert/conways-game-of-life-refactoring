@@ -18,7 +18,7 @@ public class Simulation {
 	int historyLength;
 	boolean quietMode = false;
 	OutputFormat outputFormat = new DefaultHashDashFormat();
-	PeriodicBlocker periodicBlocker = PeriodicBlocker.DefaultNoPeriod();
+	PeriodicBlocker periodicBlocker = PeriodicBlocker.defaultWithNoPeriod();
 
 	private List<Set<Cell>> history = new LinkedList<>();
 

@@ -90,7 +90,7 @@ public class GameOfLife {
 				break;
 			case "-q":
 				game.quietMode = true;
-				game.periodicBlocker = PeriodicBlocker.Null();
+				game.periodicBlocker = PeriodicBlocker.none();
 				break;
 			default:
 				throw new Exception("Unknown argument " + arg);

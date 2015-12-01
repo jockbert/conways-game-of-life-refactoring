@@ -8,7 +8,7 @@ public interface PeriodicBlocker {
 
 	void blockRestOfPeriodAndRestart();
 
-	static PeriodicBlocker DefaultNoPeriod() {
+	static PeriodicBlocker defaultWithNoPeriod() {
 		return new PeriodicBlocker() {
 
 			private long periodLength = NO_DURATION;
@@ -40,7 +40,7 @@ public interface PeriodicBlocker {
 		};
 	}
 
-	static PeriodicBlocker Null() {
+	static PeriodicBlocker none() {
 		return new PeriodicBlocker() {
 			@Override
 			public void setPeriod(long periodLength) {
