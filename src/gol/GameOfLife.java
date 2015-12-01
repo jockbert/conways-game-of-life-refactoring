@@ -35,40 +35,50 @@ public class GameOfLife {
 			Iterator<String> argIterator = Arrays.asList(args).iterator();
 
 			while (argIterator.hasNext()) {
-				String arg = argIterator.next();
 
-				if ("-s".equals(arg)) {
+				String arg = argIterator.next();
+				switch (arg) {
+				case "-s":
 					game.steps = nextArgAsInt(argIterator);
-				} else if ("-f".equals(arg)) {
+					break;
+				case "-f":
 					String filePath = argIterator.next();
 					List<String> lines = readWorldFile(game, filePath);
 
 					if (game.height == -1)
 						game.height = lines.size();
 					if (game.width == -1)
-						game.width = lines.isEmpty()? 0 : lines.get(0).length();
+						game.width = lines.isEmpty() ? 0 : lines.get(0)
+								.length();
 
 					game.world = new AliveCellsWorld(lines);
-
-				} else if ("-?".equals(arg)) {
+					break;
+				case "-?":
 					throw new Exception("Help requested");
-				} else if ("-@".equals(arg)) {
+				case "-@":
 					game.outputFormat = new SpacedAtFormat();
-				} else if ("-O".equals(arg)) {
+					break;
+				case "-O":
 					game.outputFormat = new BigOFormat();
-				} else if (arg.equals("-w")) {
+					break;
+				case "-w":
 					game.width = nextArgAsInt(argIterator);
-				} else if ("-h".equals(arg))
+					break;
+				case "-h":
 					game.height = nextArgAsInt(argIterator);
-				else if ("-l".equals(arg))
+					break;
+				case "-l":
 					game.historyLength = nextArgAsInt(argIterator);
-				else if ("-t".equals(arg))
+					break;
+				case "-t":
 					game.stepDelay = nextArgAsInt(argIterator);
-				else if ("-q".equals(arg)) {
+					break;
+				case "-q":
 					game.quietMode = true;
-
-				} else
+					break;
+				default:
 					throw new Exception("Unknown argument " + arg);
+				}
 			}
 
 			if (game.world == null) {
