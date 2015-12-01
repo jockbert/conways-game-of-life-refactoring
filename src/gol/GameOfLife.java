@@ -1,18 +1,14 @@
 package gol;
 
+import gol.WorldSource.WorldSourceResult;
 import gol.output.BigOFormat;
 import gol.output.SpacedAtFormat;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class GameOfLife {
 
@@ -78,14 +74,15 @@ public class GameOfLife {
 				break;
 			case "-f":
 				String filePath = argIterator.next();
-				List<String> lines = readWorldFile(filePath);
+				WorldSource source = new FileWorldSource(filePath);
+				WorldSourceResult result = source.generate();
 
 				if (game.height == -1)
-					game.height = lines.size();
+					game.height = result.height();
 				if (game.width == -1)
-					game.width = lines.isEmpty() ? 0 : lines.get(0).length();
+					game.width = result.width();
 
-				game.world = new AliveCellsWorld(lines);
+				game.world = result.world();
 				break;
 			case "-?":
 				throw new Exception("Help requested");
@@ -134,39 +131,5 @@ public class GameOfLife {
 		line("   -l <X>          Detect loops of maximum length x. Default is 0 - no loop detection.");
 		line("   -t <MS>         Time delay (ms) to wait between each step. Default is 0 ms.");
 		line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
-	}
-
-	private static ArrayList<String> readWorldFile(String filePath)
-			throws FileNotFoundException {
-		File file = new File(filePath);
-		Scanner scanner = new Scanner(file);
-		ArrayList<String> lines = new ArrayList<String>();
-		int maxWidth = 0;
-		for(int lineNumber = 1; scanner.hasNextLine(); lineNumber++) {
-			String line = scanner.nextLine();
-			Pattern pattern = Pattern.compile("[^#-]");
-			Matcher matcher = pattern.matcher(line);
-			if (matcher.find()) {
-				scanner.close();
-				throw new RuntimeException("Invalid character '"
-						+ matcher.group() + "' on line " + lineNumber
-						+ " in file " + filePath);
-			}
-
-			maxWidth = Math.max(maxWidth, line.length());
-
-			lines.add(line);
-		}
-
-		for (int i = 0; i < lines.size(); ++i) {
-			String line = lines.get(i);
-
-			while (line.length() < maxWidth)
-				line += '-';
-
-			lines.set(i, line);
-		}
-		scanner.close();
-		return lines;
 	}
 }
