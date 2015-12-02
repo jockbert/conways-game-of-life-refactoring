@@ -17,22 +17,16 @@ public class Simulation {
 	LoopDetector loopDetector = LoopDetector.none();
 
 	void runSimulation() {
+		OptionalInt loop = OptionalInt.empty();
 
-		loopDetector.addSimulationStepAndDetect(world);
-		printStep(0, OptionalInt.empty());
-		periodicBlocker.blockRestOfPeriodAndRestart();
+		for (int step = 0; step <= steps && !loop.isPresent(); ++step) {
 
-		for (int stepCount = 1; stepCount <= steps; ++stepCount) {
+			if (step != 0)
+				world = world.nextWorld();
 
-			world = world.nextWorld();
-
-			OptionalInt loop = loopDetector.addSimulationStepAndDetect(world);
-
-			printStep(stepCount, loop);
+			loop = loopDetector.addSimulationStepAndDetect(world);
+			printStep(step, loop);
 			periodicBlocker.blockRestOfPeriodAndRestart();
-
-			if (loop.isPresent())
-				break;
 		}
 	}
 
