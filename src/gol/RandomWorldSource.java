@@ -1,8 +1,10 @@
 package gol;
 
-import java.util.ArrayList;
-import java.util.List;
+import static gol.Cell.cell;
+
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 public class RandomWorldSource implements WorldSource {
 
@@ -17,8 +19,7 @@ public class RandomWorldSource implements WorldSource {
 	
 	@Override
 	public WorldSourceResult generate() {
-		
-		
+
 		return new WorldSourceResult() {
 			
 			@Override
@@ -37,18 +38,15 @@ public class RandomWorldSource implements WorldSource {
 			}
 		};
 	}
-	
+
 	private World createRandomWorld() {
-		List<String> lines = new ArrayList<>();
+		Set<Cell> aliveCells = new HashSet<>();
 
-		for (int h = 0; h < height; h++) {
-			String line = "";
-			for (int w = 0; w < width; w++) 
-				line += rand.nextBoolean() ? '#' : '-';
-			
-			lines.add(line);
-		}
+		for (int y = 0; y < height; y++)
+			for (int x = 0; x < width; x++)
+				if(rand.nextBoolean())
+					aliveCells.add(cell(x,y));
 
-		return new AliveCellsWorld(lines);
+		return new AliveCellsWorld(aliveCells);
 	}
 }
