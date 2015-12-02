@@ -1,11 +1,17 @@
 package gol;
 
+import gol.Simulation.SimulationConfig;
 import gol.WorldSource.WorldSourceResult;
 import gol.output.BigOFormat;
+import gol.output.DefaultHashDashFormat;
+import gol.output.OutputFormat;
 import gol.output.SpacedAtFormat;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.function.Supplier;
 
 public class GameOfLife {
 
@@ -13,92 +19,125 @@ public class GameOfLife {
 		System.out.println(s);
 	}
 
-	static int nextArgAsInt(Iterator<String> args) {
+	static int intArg(Iterator<String> args) {
 		int n = Integer.parseInt(args.next());
 		if (n < 0)
 			throw new RuntimeException("Invalid argument value " + n);
 		return n;
 	}
 
+	static OptionalInt optIntArg(Iterator<String> args) {
+		return OptionalInt.of(intArg(args));
+	}
+
+	static OptionalInt keepOrElse(OptionalInt keep, int otherwise) {
+		return keep.isPresent() ? keep : OptionalInt.of(otherwise);
+	}
+
+	private static class ProgramConfig {
+		OptionalInt stepLimit = OptionalInt.empty();
+		OptionalInt height = OptionalInt.empty();
+		OptionalInt width = OptionalInt.empty();
+		boolean quietMode = false;
+		OutputFormat outputFormat = new DefaultHashDashFormat();
+		PeriodicBlocker periodicBlocker = PeriodicBlocker.defaultWithNoPeriod();
+		LoopDetector loopDetector = LoopDetector.none();
+		Optional<String> filePath = Optional.empty();
+	}
+
 	public static void main(String[] args) {
 
 		try {
-			Simulation game = new Simulation();
-			parseArguments(args, game);
+			Iterator<String> argIt = Arrays.asList(args).iterator();
+			ProgramConfig progConf = parseArguments(argIt);
+			SimulationConfig simConf = programToSimulationConfig(progConf);
 
-			game.height = game.height == -1 ? 15 : game.height;
-			game.width = game.width == -1 ? 20 : game.width;
-			game.steps = game.steps == -1 ? 100 : game.steps;
-
-			if (game.world == null) {
-				WorldSource source = new RandomWorldSource(game.width,
-						game.height);
-				WorldSourceResult result = source.generate();
-				game.world = result.world();
-			}
-
-			game.stepPrinter = StepPrinter.fixedViewPort(game.width,
-					game.height, game.outputFormat);
-
-			game.runSimulation();
+			Simulation sim = new Simulation();
+			sim.runSimulation(simConf);
 
 		} catch (Exception e) {
 			printHelp(e.getMessage());
 		}
 	}
 
-	private static void parseArguments(String[] args, Simulation game)
+	private static SimulationConfig programToSimulationConfig(
+			ProgramConfig progConf) {
+		SimulationConfig simConf = new SimulationConfig();
+
+		simConf.quietMode = progConf.quietMode;
+		simConf.stepLimit = progConf.stepLimit.orElse(100);
+		simConf.loopDetector = progConf.loopDetector;
+		simConf.periodicBlocker = progConf.periodicBlocker;
+
+		WorldSource ws = fileWS(progConf).orElseGet(randomWS(progConf));
+		WorldSourceResult result = ws.generate();
+
+		int width = progConf.width.orElse(result.width());
+		int height = progConf.height.orElse(result.height());
+
+		simConf.world = result.world();
+		simConf.stepPrinter = StepPrinter.fixedViewPort(width, height,
+				progConf.outputFormat);
+
+		return simConf;
+	}
+
+	private static Optional<WorldSource> fileWS(ProgramConfig progConf) {
+		return progConf.filePath.map(FileWorldSource::new);
+	}
+
+	private static Supplier<WorldSource> randomWS(ProgramConfig progConf) {
+		return () -> {
+			int width = progConf.width.orElse(20);
+			int height = progConf.height.orElse(15);
+			return new RandomWorldSource(width, height);
+		};
+	}
+
+	private static ProgramConfig parseArguments(Iterator<String> args)
 			throws Exception {
 
-		Iterator<String> argIterator = Arrays.asList(args).iterator();
+		ProgramConfig conf = new ProgramConfig();
 
-		while (argIterator.hasNext()) {
-
-			String arg = argIterator.next();
+		while (args.hasNext()) {
+			String arg = args.next();
 			switch (arg) {
 			case "-s":
-				game.steps = nextArgAsInt(argIterator);
+				conf.stepLimit = keepOrElse(conf.stepLimit, intArg(args));
 				break;
 			case "-f":
-				String filePath = argIterator.next();
-				WorldSource source = new FileWorldSource(filePath);
-				WorldSourceResult result = source.generate();
-				game.world = result.world();
-
-				if (game.height == -1)
-					game.height = result.height();
-				if (game.width == -1)
-					game.width = result.width();
-
+				conf.filePath = Optional.of(args.next());
 				break;
 			case "-?":
 				throw new Exception("Help requested");
 			case "-@":
-				game.outputFormat = new SpacedAtFormat();
+				conf.outputFormat = new SpacedAtFormat();
 				break;
 			case "-O":
-				game.outputFormat = new BigOFormat();
+				conf.outputFormat = new BigOFormat();
 				break;
 			case "-w":
-				game.width = nextArgAsInt(argIterator);
+				conf.width = optIntArg(args);
 				break;
 			case "-h":
-				game.height = nextArgAsInt(argIterator);
+				conf.height = optIntArg(args);
 				break;
 			case "-l":
-				game.loopDetector = LoopDetector.ofMaxLength(nextArgAsInt(argIterator));
+				conf.loopDetector = LoopDetector.ofMaxLength(intArg(args));
 				break;
 			case "-t":
-				game.periodicBlocker.setPeriod(nextArgAsInt(argIterator));
+				conf.periodicBlocker.setPeriod(intArg(args));
 				break;
 			case "-q":
-				game.quietMode = true;
-				game.periodicBlocker = PeriodicBlocker.none();
+				conf.quietMode = true;
+				conf.periodicBlocker = PeriodicBlocker.none();
 				break;
 			default:
 				throw new Exception("Unknown argument " + arg);
 			}
 		}
+
+		return conf;
 	}
 
 	private static void printHelp(String message) {
