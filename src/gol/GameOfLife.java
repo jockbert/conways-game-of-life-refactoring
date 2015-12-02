@@ -37,6 +37,9 @@ public class GameOfLife {
 				game.world = result.world();
 			}
 
+			game.stepPrinter = StepPrinter.fixedViewPort(game.width,
+					game.height, game.outputFormat);
+
 			game.runSimulation();
 
 		} catch (Exception e) {
