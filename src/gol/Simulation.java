@@ -19,7 +19,7 @@ public class Simulation {
 	void runSimulation() {
 
 		loopDetector.addSimulationStepAndDetect(world);
-		printStep("start", 0, OptionalInt.empty());
+		printStep(0, OptionalInt.empty());
 		periodicBlocker.blockRestOfPeriodAndRestart();
 
 		for (int stepCount = 1; stepCount <= steps; ++stepCount) {
@@ -28,11 +28,7 @@ public class Simulation {
 
 			OptionalInt loop = loopDetector.addSimulationStepAndDetect(world);
 
-			String loopText = loop.isPresent() ? " - loop of length "
-					+ loop.getAsInt() + " detected" : "";
-			String stepTitle = "step " + stepCount + loopText;
-
-			printStep(stepTitle, stepCount, loop);
+			printStep(stepCount, loop);
 			periodicBlocker.blockRestOfPeriodAndRestart();
 
 			if (loop.isPresent())
@@ -40,7 +36,7 @@ public class Simulation {
 		}
 	}
 
-	private void printStep(String title, int stepCount, OptionalInt loop) {
+	private void printStep(int stepCount, OptionalInt loop) {
 		if (!quietMode || stepCount == steps || loop.isPresent()) {
 			for (int y = 0; y < height; ++y) {
 				String line = "";
@@ -50,8 +46,18 @@ public class Simulation {
 				System.out.println(line);
 			}
 
-			System.out.println(title);
+			System.out.println(getTitle(stepCount, loop));
 			System.out.println();
 		}
+	}
+
+	private String getTitle(int stepCount, OptionalInt loop) {
+		if (stepCount == 0)
+			return "start";
+		else if (loop.isPresent())
+			return String.format("step %s - loop of length %s detected",
+					stepCount, loop.getAsInt());
+		else
+			return "step " + stepCount;
 	}
 }
