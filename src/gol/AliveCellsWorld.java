@@ -21,27 +21,6 @@ public class AliveCellsWorld implements World {
 		aliveCells = new HashSet<>(cells);
 	}
 
-	public AliveCellsWorld(List<String> lines) {
-		aliveCells = getAliveCells(lines);
-	}
-
-	public static Set<Cell> getAliveCells(List<String> lines) {
-		Set<Cell> result = new HashSet<>();
-
-		int height = lines.size();
-		int width = lines.isEmpty() ? 0 : lines.get(0).length();
-
-		for (int y = 0; y < height; ++y) {
-			String line = lines.get(y);
-			for (int x = 0; x < width; ++x) {
-				if (line.charAt(x) == '#')
-					result.add(cell(x, y));
-			}
-		}
-
-		return result;
-	}
-
 	@Override
 	public boolean isAlive(int x, int y) {
 		return isAlive(cell(x, y));

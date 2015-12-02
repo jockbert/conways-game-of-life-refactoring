@@ -1,10 +1,14 @@
 package gol;
 
+import static gol.Cell.cell;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,17 +25,17 @@ public class FileWorldSource implements WorldSource {
 	public WorldSourceResult generate() {
 		final List<String> lines = readWorldFile();
 		ensureAllLinesHasValidCharacters(lines);
-		ensureAllLinesHasTheSameWidth(lines);
+		Set<Cell> aliveCells = convertLinesToAliveCellSet(lines);
 
 		return new WorldSourceResult() {
 			@Override
 			public World world() {
-				return new AliveCellsWorld(lines);
+				return new AliveCellsWorld(aliveCells);
 			}
 
 			@Override
 			public int width() {
-				return lines.isEmpty() ? 0 : lines.get(0).length();
+				return maxWidth(lines);
 			}
 
 			@Override
@@ -83,14 +87,20 @@ public class FileWorldSource implements WorldSource {
 		}
 	}
 
-	private void ensureAllLinesHasTheSameWidth(List<String> lines) {
-		int width = maxWidth(lines);
-		for (int i = 0; i < lines.size(); ++i) {
-			String line = lines.get(i);
-			while (line.length() < width)
-				line += '-';
-			lines.set(i, line);
+	private Set<Cell> convertLinesToAliveCellSet(List<String> lines) {
+		Set<Cell> result = new HashSet<>();
+
+		int height = lines.size();
+		for (int y = 0; y < height; ++y) {
+			String line = lines.get(y);
+			int width = line.length();
+			for (int x = 0; x < width; ++x) {
+				if (line.charAt(x) == '#')
+					result.add(cell(x, y));
+			}
 		}
+
+		return result;
 	}
 
 	private int maxWidth(List<String> lines) {
