@@ -1,7 +1,5 @@
 package gol;
 
-import gol.output.OutputFormat;
-
 import java.util.OptionalInt;
 
 public interface StepPrinter {

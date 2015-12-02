@@ -1,7 +1,6 @@
 package gol;
 
 import gol.Simulation.SimulationConfig;
-import gol.output.OutputFormat;
 
 import java.util.Arrays;
 import java.util.Iterator;

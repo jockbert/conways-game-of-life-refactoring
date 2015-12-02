@@ -1,4 +1,4 @@
-package gol.output;
+package gol;
 
 public interface OutputFormat {
 	String cell(boolean isAlive);
