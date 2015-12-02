@@ -9,25 +9,6 @@ import java.util.OptionalInt;
 
 public class GameOfLife {
 
-	static void line(String s) {
-		System.out.println(s);
-	}
-
-	static int intArg(Iterator<String> args) {
-		int n = Integer.parseInt(args.next());
-		if (n < 0)
-			throw new RuntimeException("Invalid argument value " + n);
-		return n;
-	}
-
-	static OptionalInt optIntArg(Iterator<String> args) {
-		return OptionalInt.of(intArg(args));
-	}
-
-	static OptionalInt keepOrElse(OptionalInt keep, int otherwise) {
-		return keep.isPresent() ? keep : OptionalInt.of(otherwise);
-	}
-
 	static class ProgramConfig {
 		OptionalInt stepLimit = OptionalInt.empty();
 		OptionalInt height = OptionalInt.empty();
@@ -45,10 +26,9 @@ public class GameOfLife {
 			Setup setup = new Setup(20, 15, 100);
 			Iterator<String> argIt = Arrays.asList(args).iterator();
 			ProgramConfig progConf = parseArguments(argIt);
-
 			SimulationConfig simConf = setup.programToSimulationConf(progConf);
 
-			(new Simulation()).runSimulation(simConf);
+			new Simulation().runSimulation(simConf);
 
 		} catch (Exception e) {
 			printHelp(e.getMessage());
@@ -101,6 +81,21 @@ public class GameOfLife {
 		return conf;
 	}
 
+	static int intArg(Iterator<String> args) {
+		int n = Integer.parseInt(args.next());
+		if (n < 0)
+			throw new RuntimeException("Invalid argument value " + n);
+		return n;
+	}
+
+	static OptionalInt optIntArg(Iterator<String> args) {
+		return OptionalInt.of(intArg(args));
+	}
+
+	static OptionalInt keepOrElse(OptionalInt keep, int otherwise) {
+		return keep.isPresent() ? keep : OptionalInt.of(otherwise);
+	}
+
 	private static void printHelp(String message) {
 		line(message);
 
@@ -119,5 +114,9 @@ public class GameOfLife {
 		line("   -l <X>          Detect loops of maximum length x. Default is 0 - no loop detection.");
 		line("   -t <MS>         Time delay (ms) to wait between each step. Default is 0 ms.");
 		line("   -q              Quiet mode. Only outputs the last step in a simulation. Ignores time delay.");
+	}
+
+	static void line(String s) {
+		System.out.println(s);
 	}
 }
