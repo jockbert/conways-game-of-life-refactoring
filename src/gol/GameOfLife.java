@@ -1,7 +1,6 @@
 package gol;
 
 import gol.Simulation.SimulationConfig;
-import gol.WorldSource.WorldSourceResult;
 import gol.output.BigOFormat;
 import gol.output.DefaultHashDashFormat;
 import gol.output.OutputFormat;
@@ -11,7 +10,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.function.Supplier;
 
 public class GameOfLife {
 
@@ -34,7 +32,7 @@ public class GameOfLife {
 		return keep.isPresent() ? keep : OptionalInt.of(otherwise);
 	}
 
-	private static class ProgramConfig {
+	static class ProgramConfig {
 		OptionalInt stepLimit = OptionalInt.empty();
 		OptionalInt height = OptionalInt.empty();
 		OptionalInt width = OptionalInt.empty();
@@ -48,50 +46,17 @@ public class GameOfLife {
 	public static void main(String[] args) {
 
 		try {
+			Setup setup = new Setup(20, 15, 100);
 			Iterator<String> argIt = Arrays.asList(args).iterator();
 			ProgramConfig progConf = parseArguments(argIt);
-			SimulationConfig simConf = programToSimulationConfig(progConf);
 
-			Simulation sim = new Simulation();
-			sim.runSimulation(simConf);
+			SimulationConfig simConf = setup.programToSimulationConf(progConf);
+
+			(new Simulation()).runSimulation(simConf);
 
 		} catch (Exception e) {
 			printHelp(e.getMessage());
 		}
-	}
-
-	private static SimulationConfig programToSimulationConfig(
-			ProgramConfig progConf) {
-		SimulationConfig simConf = new SimulationConfig();
-
-		simConf.quietMode = progConf.quietMode;
-		simConf.stepLimit = progConf.stepLimit.orElse(100);
-		simConf.loopDetector = progConf.loopDetector;
-		simConf.periodicBlocker = progConf.periodicBlocker;
-
-		WorldSource ws = fileWS(progConf).orElseGet(randomWS(progConf));
-		WorldSourceResult result = ws.generate();
-
-		int width = progConf.width.orElse(result.width());
-		int height = progConf.height.orElse(result.height());
-
-		simConf.world = result.world();
-		simConf.stepPrinter = StepPrinter.fixedViewPort(width, height,
-				progConf.outputFormat);
-
-		return simConf;
-	}
-
-	private static Optional<WorldSource> fileWS(ProgramConfig progConf) {
-		return progConf.filePath.map(FileWorldSource::new);
-	}
-
-	private static Supplier<WorldSource> randomWS(ProgramConfig progConf) {
-		return () -> {
-			int width = progConf.width.orElse(20);
-			int height = progConf.height.orElse(15);
-			return new RandomWorldSource(width, height);
-		};
 	}
 
 	private static ProgramConfig parseArguments(Iterator<String> args)
