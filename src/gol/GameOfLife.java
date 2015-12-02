@@ -1,10 +1,7 @@
 package gol;
 
 import gol.Simulation.SimulationConfig;
-import gol.output.BigOFormat;
-import gol.output.DefaultHashDashFormat;
 import gol.output.OutputFormat;
-import gol.output.SpacedAtFormat;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -37,7 +34,7 @@ public class GameOfLife {
 		OptionalInt height = OptionalInt.empty();
 		OptionalInt width = OptionalInt.empty();
 		boolean quietMode = false;
-		OutputFormat outputFormat = new DefaultHashDashFormat();
+		OutputFormat outputFormat = OutputFormat.defaultHashDash();
 		PeriodicBlocker periodicBlocker = PeriodicBlocker.defaultWithNoPeriod();
 		LoopDetector loopDetector = LoopDetector.none();
 		Optional<String> filePath = Optional.empty();
@@ -76,10 +73,10 @@ public class GameOfLife {
 			case "-?":
 				throw new Exception("Help requested");
 			case "-@":
-				conf.outputFormat = new SpacedAtFormat();
+				conf.outputFormat = OutputFormat.spacedAt();
 				break;
 			case "-O":
-				conf.outputFormat = new BigOFormat();
+				conf.outputFormat = OutputFormat.bigO();
 				break;
 			case "-w":
 				conf.width = optIntArg(args);
