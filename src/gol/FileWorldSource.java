@@ -62,6 +62,7 @@ public class FileWorldSource implements WorldSource {
 			lines.add(scanner.nextLine());
 
 		return lines;
+
 	}
 
 	private Scanner openScanner() {
@@ -74,7 +75,7 @@ public class FileWorldSource implements WorldSource {
 
 	private void ensureAllLinesHasValidCharacters(List<String> lines) {
 		for (int i = 0; i < lines.size(); ++i)
-			ensureValidCharacters(i+1, lines.get(i));
+			ensureValidCharacters(i + 1, lines.get(i));
 	}
 
 	private void ensureValidCharacters(int lineNumber, String line) {
