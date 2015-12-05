@@ -2,18 +2,17 @@ package gol;
 
 import static gol.Cell.cell;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AliveCellsWorld implements World {
 
-	private final static List<Cell> ALL_DIRECTIONS = Arrays.asList(
-			cell(-1, -1), cell(-1, 0), cell(-1, 1), cell(1, -1), cell(1, 0),
-			cell(1, 1), cell(0, -1), cell(0, 1));
+	private final static Cell[] ALL_DIRECTIONS = new Cell[] { cell(-1, -1),
+			cell(-1, 0), cell(-1, 1), cell(1, -1), cell(1, 0), cell(1, 1),
+			cell(0, -1), cell(0, 1) };
 
 	private final Set<Cell> aliveCells;
 
@@ -37,26 +36,43 @@ public class AliveCellsWorld implements World {
 
 	@Override
 	public World nextWorld() {
-		Stream<Cell> neighbours = aliveCells.stream().flatMap(
-				this::neighboursOf);
-		Stream<Cell> candidates = Stream
-				.concat(aliveCells.stream(), neighbours).distinct();
-		Stream<Cell> nextGen = candidates
-				.filter(this::shouldLiveNextGeneration);
-
-		return new AliveCellsWorld(nextGen.collect(Collectors.toSet()));
+		return new AliveCellsWorld(nextWorldSet());
 	}
 
-	private Stream<Cell> neighboursOf(Cell c) {
-		return ALL_DIRECTIONS.stream().map(dir -> dir.add(c));
+	private Set<Cell> nextWorldSet() {
+		int initialCapacity = aliveCells.size() * 2;
+		Set<Cell> result = new HashSet<>(initialCapacity);
+
+		for (Cell c : aliveCells)
+			result.addAll(getAllNextGenNearbyCells(c));
+
+		return result;
 	}
 
-	private long countAliveNeighboursOf(Cell c) {
-		return neighboursOf(c).filter(this::isAlive).count();
+	private Collection<Cell> getAllNextGenNearbyCells(Cell c) {
+
+		List<Cell> result = new ArrayList<>();
+
+		for (Cell neighbour : ALL_DIRECTIONS)
+			if (willLive(c.add(neighbour)))
+				result.add(c.add(neighbour));
+
+		if (willLive(c))
+			result.add(c);
+
+		return result;
+
 	}
 
-	private boolean shouldLiveNextGeneration(Cell c) {
-		long aliveNeighs = countAliveNeighboursOf(c);
-		return aliveNeighs == 3 || (isAlive(c) && aliveNeighs == 2);
+	private boolean willLive(Cell cell) {
+
+		int count = 0;
+
+		for (Cell neighbour : ALL_DIRECTIONS) {
+			if (isAlive(cell.add(neighbour)))
+				count++;
+		}
+
+		return count == 3 || (count == 2 && isAlive(cell));
 	}
 }
