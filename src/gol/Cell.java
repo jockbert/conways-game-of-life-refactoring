@@ -19,7 +19,7 @@ public final class Cell {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		final int prime = 9973;
 		return prime * x + y;
 	}
 
