@@ -29,22 +29,8 @@ public class FileWorldSource implements WorldSource {
 		ensureAllLinesHasValidCharacters(lines);
 		Set<Cell> aliveCells = convertLinesToAliveCellSet(lines);
 
-		return new WorldSourceResult() {
-			@Override
-			public World world() {
-				return new AliveCellsWorld(aliveCells);
-			}
-
-			@Override
-			public int width() {
-				return maxWidth(lines);
-			}
-
-			@Override
-			public int height() {
-				return lines.size();
-			}
-		};
+		World world = new AliveCellsWorld(aliveCells);
+		return WorldSource.result(world, maxWidth(lines), lines.size());
 	}
 
 	private List<String> readWorldFile() {

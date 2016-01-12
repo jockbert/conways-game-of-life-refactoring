@@ -18,27 +18,10 @@ public class RandomWorldSource implements WorldSource {
 		this.width = width;
 		this.height = height;
 	}
-	
+
 	@Override
 	public WorldSourceResult generate() {
-
-		return new WorldSourceResult() {
-			
-			@Override
-			public World world() {
-				return createRandomWorld();
-			}
-			
-			@Override
-			public int width() {
-				return width;
-			}
-			
-			@Override
-			public int height() {
-				return height;
-			}
-		};
+		return WorldSource.result(createRandomWorld(), width, height);
 	}
 
 	private World createRandomWorld() {
@@ -46,8 +29,8 @@ public class RandomWorldSource implements WorldSource {
 
 		for (int y = 0; y < height; y++)
 			for (int x = 0; x < width; x++)
-				if(rand.nextBoolean())
-					aliveCells.add(cell(x,y));
+				if (rand.nextBoolean())
+					aliveCells.add(cell(x, y));
 
 		return new AliveCellsWorld(aliveCells);
 	}
