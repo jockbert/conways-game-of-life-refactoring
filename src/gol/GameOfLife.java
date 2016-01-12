@@ -1,11 +1,10 @@
 package gol;
 
-import gol.Simulation.SimulationConfig;
-
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.OptionalInt;
+
+import gol.Simulation.SimulationConfig;
 
 public class GameOfLife {
 
@@ -24,8 +23,7 @@ public class GameOfLife {
 
 		try {
 			Setup setup = new Setup(20, 15, 100);
-			Iterator<String> argIt = Arrays.asList(args).iterator();
-			ProgramConfig progConf = parseArguments(argIt);
+			ProgramConfig progConf = parseArguments(args);
 			SimulationConfig simConf = setup.programToSimulationConf(progConf);
 
 			new Simulation().runSimulation(simConf);
@@ -35,48 +33,33 @@ public class GameOfLife {
 		}
 	}
 
-	private static ProgramConfig parseArguments(Iterator<String> args)
-			throws Exception {
+	private static void gotoHelp(String message) {
+		throw new RuntimeException(message);
+	}
+
+	private static ProgramConfig parseArguments(String[] args) throws Exception {
 
 		ProgramConfig conf = new ProgramConfig();
+		ArgumentParser parser = new ArgumentParser();
 
-		while (args.hasNext()) {
-			String arg = args.next();
-			switch (arg) {
-			case "-s":
-				conf.stepLimit = keepOrElse(conf.stepLimit, intArg(args));
-				break;
-			case "-f":
-				conf.filePath = Optional.of(args.next());
-				break;
-			case "-?":
-				throw new Exception("Help requested");
-			case "-@":
-				conf.outputFormat = OutputFormat.spacedAt();
-				break;
-			case "-O":
-				conf.outputFormat = OutputFormat.bigO();
-				break;
-			case "-w":
-				conf.width = optIntArg(args);
-				break;
-			case "-h":
-				conf.height = optIntArg(args);
-				break;
-			case "-l":
-				conf.loopDetector = LoopDetector.ofMaxLength(intArg(args));
-				break;
-			case "-t":
-				conf.periodicBlocker.setPeriod(intArg(args));
-				break;
-			case "-q":
-				conf.quietMode = true;
-				conf.periodicBlocker = PeriodicBlocker.none();
-				break;
-			default:
-				throw new Exception("Unknown argument " + arg);
-			}
-		}
+		parser.onError(GameOfLife::gotoHelp);
+		parser.strArg("-f", s -> conf.filePath = Optional.of(s));
+
+		parser.intArg("-s", n -> conf.stepLimit = keepOrElse(conf.stepLimit, n));
+		parser.intArg("-w", n -> conf.width = opt(n));
+		parser.intArg("-h", n -> conf.height = opt(n));
+		parser.intArg("-l", n -> conf.loopDetector = LoopDetector.ofMaxLength(n));
+		parser.intArg("-t", n -> conf.periodicBlocker.setPeriod(n));
+
+		parser.flag("-?", () -> gotoHelp("Help requested"));
+		parser.flag("-@", () -> conf.outputFormat = OutputFormat.spacedAt());
+		parser.flag("-O", () -> conf.outputFormat = OutputFormat.bigO());
+		parser.flag("-q", () -> {
+			conf.quietMode = true;
+			conf.periodicBlocker = PeriodicBlocker.none();
+		});
+
+		parser.apply(args);
 
 		return conf;
 	}
@@ -88,8 +71,8 @@ public class GameOfLife {
 		return n;
 	}
 
-	static OptionalInt optIntArg(Iterator<String> args) {
-		return OptionalInt.of(intArg(args));
+	static OptionalInt opt(int n) {
+		return OptionalInt.of(n);
 	}
 
 	static OptionalInt keepOrElse(OptionalInt keep, int otherwise) {
