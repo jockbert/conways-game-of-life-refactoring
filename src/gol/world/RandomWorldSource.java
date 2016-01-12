@@ -1,10 +1,12 @@
-package gol;
+package gol.world;
 
 import static gol.Cell.cell;
 
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+
+import gol.Cell;
 
 public class RandomWorldSource implements WorldSource {
 

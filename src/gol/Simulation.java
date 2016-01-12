@@ -2,6 +2,8 @@ package gol;
 
 import java.util.OptionalInt;
 
+import gol.world.World;
+
 public class Simulation {
 
 	static class SimulationConfig {

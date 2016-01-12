@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
 
+import gol.world.World;
+
 public interface LoopDetector {
 
 	OptionalInt addSimulationStepAndDetect(World world);

@@ -1,6 +1,8 @@
-package gol;
+package gol.world;
 
 import java.util.Set;
+
+import gol.Cell;
 
 public interface World {
 

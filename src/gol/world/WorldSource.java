@@ -1,4 +1,4 @@
-package gol;
+package gol.world;
 
 public interface WorldSource {
 	

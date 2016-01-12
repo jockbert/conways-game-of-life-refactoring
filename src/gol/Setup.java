@@ -2,7 +2,10 @@ package gol;
 
 import gol.GameOfLife.ProgramConfig;
 import gol.Simulation.SimulationConfig;
-import gol.WorldSource.WorldSourceResult;
+import gol.world.FileWorldSource;
+import gol.world.RandomWorldSource;
+import gol.world.WorldSource;
+import gol.world.WorldSource.WorldSourceResult;
 
 import java.util.Optional;
 import java.util.function.Supplier;
