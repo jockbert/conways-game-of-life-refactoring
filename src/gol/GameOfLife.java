@@ -1,6 +1,5 @@
 package gol;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -33,10 +32,6 @@ public class GameOfLife {
 		}
 	}
 
-	private static void gotoHelp(String message) {
-		throw new RuntimeException(message);
-	}
-
 	private static ProgramConfig parseArguments(String[] args) throws Exception {
 
 		ProgramConfig conf = new ProgramConfig();
@@ -45,7 +40,7 @@ public class GameOfLife {
 		parser.onError(GameOfLife::gotoHelp);
 		parser.strArg("-f", s -> conf.filePath = Optional.of(s));
 
-		parser.intArg("-s", n -> conf.stepLimit = keepOrElse(conf.stepLimit, n));
+		parser.intArg("-s", n -> conf.stepLimit = opt(conf.stepLimit.orElse(n)));
 		parser.intArg("-w", n -> conf.width = opt(n));
 		parser.intArg("-h", n -> conf.height = opt(n));
 		parser.intArg("-l", n -> conf.loopDetector = LoopDetector.ofMaxLength(n));
@@ -64,19 +59,12 @@ public class GameOfLife {
 		return conf;
 	}
 
-	static int intArg(Iterator<String> args) {
-		int n = Integer.parseInt(args.next());
-		if (n < 0)
-			throw new RuntimeException("Invalid argument value " + n);
-		return n;
-	}
-
 	static OptionalInt opt(int n) {
 		return OptionalInt.of(n);
 	}
 
-	static OptionalInt keepOrElse(OptionalInt keep, int otherwise) {
-		return keep.isPresent() ? keep : OptionalInt.of(otherwise);
+	private static void gotoHelp(String message) {
+		throw new RuntimeException(message);
 	}
 
 	private static void printHelp(String message) {
