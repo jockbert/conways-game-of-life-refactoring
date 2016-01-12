@@ -9,15 +9,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import gol.Cell;
 
 public class FileWorldSource implements WorldSource {
 
 	private String filePath;
-	private Pattern pattern = Pattern.compile("[^#-]");
 
 	public FileWorldSource(String filePath) {
 		this.filePath = filePath;
@@ -67,12 +64,13 @@ public class FileWorldSource implements WorldSource {
 	}
 
 	private void ensureValidCharacters(int lineNumber, String line) {
-		Matcher matcher = pattern.matcher(line);
-		if (matcher.find()) {
-			String match = matcher.group();
-			String format = "Invalid character '%s' on line %s in file %s";
-			String message = String.format(format, match, lineNumber, filePath);
-			throw new RuntimeException(message);
+		for (int i = 0; i < line.length(); ++i) {
+			char c = line.charAt(i);
+			if (c != '#' && c != '-') {
+				String format = "Invalid character '%s' on line %s in file %s";
+				String message = String.format(format, c, lineNumber, filePath);
+				throw new RuntimeException(message);
+			}
 		}
 	}
 
