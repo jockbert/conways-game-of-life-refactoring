@@ -4,11 +4,10 @@ import static gol.Cell.cell;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import gol.Cell;
 
@@ -20,34 +19,38 @@ public class FileWorldSource implements WorldSource {
 		this.filePath = filePath;
 	}
 
+	private class LineScope {
+		int lineNumber = 0;
+		int maxWidth = 0;
+
+		void incrementLine(String line) {
+			maxWidth = Math.max(maxWidth, line.length());
+			lineNumber++;
+		}
+	}
+
 	@Override
 	public WorldSourceResult generate() {
-		final List<String> lines = readWorldFile();
-		ensureAllLinesHasValidCharacters(lines);
-		Set<Cell> aliveCells = convertLinesToAliveCellSet(lines);
+
+		LineScope rs = new LineScope();
+		Set<Cell> aliveCells = new HashSet<>();
+
+		readWorldFile(line -> {
+			rs.incrementLine(line);
+			addAliveCellsToSet(aliveCells, rs.lineNumber - 1, line);
+			ensureValidCharacters(rs.lineNumber, line);
+		});
 
 		World world = new AliveCellsWorld(aliveCells);
-		return WorldSource.result(world, maxWidth(lines), lines.size());
+		return WorldSource.result(world, rs.maxWidth, rs.lineNumber);
 	}
 
-	private List<String> readWorldFile() {
+	private void readWorldFile(Consumer<String> lineConsumer) {
 		Scanner scanner = openScanner();
-		List<String> lines;
-		try {
-			lines = scanAllLines(scanner);
-		} finally {
-			scanner.close();
-		}
-		return lines;
-	}
-
-	private List<String> scanAllLines(Scanner scanner) {
-		List<String> lines = new ArrayList<String>();
 		while (scanner.hasNextLine())
-			lines.add(scanner.nextLine());
+			lineConsumer.accept(scanner.nextLine());
 
-		return lines;
-
+		scanner.close();
 	}
 
 	private Scanner openScanner() {
@@ -56,11 +59,6 @@ public class FileWorldSource implements WorldSource {
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e.getMessage());
 		}
-	}
-
-	private void ensureAllLinesHasValidCharacters(List<String> lines) {
-		for (int i = 0; i < lines.size(); ++i)
-			ensureValidCharacters(i + 1, lines.get(i));
 	}
 
 	private void ensureValidCharacters(int lineNumber, String line) {
@@ -74,26 +72,11 @@ public class FileWorldSource implements WorldSource {
 		}
 	}
 
-	private Set<Cell> convertLinesToAliveCellSet(List<String> lines) {
-		Set<Cell> result = new HashSet<>();
-
-		int height = lines.size();
-		for (int y = 0; y < height; ++y) {
-			String line = lines.get(y);
-			int width = line.length();
-			for (int x = 0; x < width; ++x) {
-				if (line.charAt(x) == '#')
-					result.add(cell(x, y));
-			}
+	private void addAliveCellsToSet(Set<Cell> result, int y, String line) {
+		int width = line.length();
+		for (int x = 0; x < width; ++x) {
+			if (line.charAt(x) == '#')
+				result.add(cell(x, y));
 		}
-
-		return result;
-	}
-
-	private int maxWidth(List<String> lines) {
-		int maxWidth = 0;
-		for (String line : lines)
-			maxWidth = Math.max(maxWidth, line.length());
-		return maxWidth;
 	}
 }
