@@ -2,7 +2,6 @@ package gol.world;
 
 import gol.Cell;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public interface World {
@@ -18,6 +17,6 @@ public interface World {
 	public abstract World nextWorld();
 
 	public static World create() {
-		return new CoordBoolMapWorld(new HashSet<>());
+		return new CoordBoolMapWorld();
 	}
 }

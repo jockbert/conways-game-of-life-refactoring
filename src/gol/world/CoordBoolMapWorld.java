@@ -13,11 +13,6 @@ public class CoordBoolMapWorld implements World {
 
 	private final CoordBoolMap map = CoordBoolMap.twoDimSetBoolMap();
 
-	public CoordBoolMapWorld(Set<Cell> cells) {
-		for (Cell cell : cells)
-			map.setTrue(cell.x, cell.y);
-	}
-
 	@Override
 	public boolean isAlive(int x, int y) {
 		return isAlive(cell(x, y));
