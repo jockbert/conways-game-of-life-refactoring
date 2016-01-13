@@ -1,14 +1,13 @@
 package gol.world;
 
 import static gol.Cell.cell;
+import gol.Cell;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import gol.Cell;
 
 public class AliveCellsWorld implements World {
 
@@ -76,5 +75,10 @@ public class AliveCellsWorld implements World {
 		}
 
 		return count == 3 || (count == 2 && isAlive(cell));
+	}
+
+	@Override
+	public void setAlive(int x, int y) {
+		aliveCells.add(cell(x, y));
 	}
 }

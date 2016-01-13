@@ -1,15 +1,21 @@
 package gol.world;
 
-import java.util.Set;
-
 import gol.Cell;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public interface World {
 
 	public abstract boolean isAlive(int x, int y);
 
+	public abstract void setAlive(int x, int y);
+
 	public abstract Set<Cell> getAliveCells();
 
 	public abstract World nextWorld();
 
+	public static World create() {
+		return new AliveCellsWorld(new HashSet<>());
+	}
 }

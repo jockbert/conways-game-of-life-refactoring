@@ -1,15 +1,9 @@
 package gol.world;
 
-import static gol.Cell.cell;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.function.Consumer;
-
-import gol.Cell;
 
 public class FileWorldSource implements WorldSource {
 
@@ -33,15 +27,14 @@ public class FileWorldSource implements WorldSource {
 	public WorldSourceResult generate() {
 
 		LineScope rs = new LineScope();
-		Set<Cell> aliveCells = new HashSet<>();
+		World world = World.create();
 
 		readWorldFile(line -> {
 			rs.incrementLine(line);
-			addAliveCellsToSet(aliveCells, rs.lineNumber - 1, line);
+			addAliveCells(world, rs.lineNumber - 1, line);
 			ensureValidCharacters(rs.lineNumber, line);
 		});
 
-		World world = new AliveCellsWorld(aliveCells);
 		return WorldSource.result(world, rs.maxWidth, rs.lineNumber);
 	}
 
@@ -72,11 +65,11 @@ public class FileWorldSource implements WorldSource {
 		}
 	}
 
-	private void addAliveCellsToSet(Set<Cell> result, int y, String line) {
+	private void addAliveCells(World world, int y, String line) {
 		int width = line.length();
 		for (int x = 0; x < width; ++x) {
 			if (line.charAt(x) == '#')
-				result.add(cell(x, y));
+				world.setAlive(x, y);
 		}
 	}
 }
