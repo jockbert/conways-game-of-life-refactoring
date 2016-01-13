@@ -8,13 +8,13 @@ public interface World {
 
 	public abstract boolean isAlive(int x, int y);
 
+	public abstract boolean isAlive(Cell cell);
+
 	public abstract void setAlive(int x, int y);
 
 	public abstract void setAlive(Cell cell);
 
 	public abstract Set<Cell> getAliveCells();
-
-	public abstract World nextWorld();
 
 	public static World create() {
 		return new CoordBoolMapWorld();

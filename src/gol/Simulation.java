@@ -1,8 +1,8 @@
 package gol;
 
-import java.util.OptionalInt;
-
 import gol.world.World;
+
+import java.util.OptionalInt;
 
 public class Simulation {
 
@@ -18,10 +18,11 @@ public class Simulation {
 	void runSimulation(SimulationConfig conf) {
 		OptionalInt loop = OptionalInt.empty();
 		World world = conf.world;
+		WorldIncrementor incrementor = WorldIncrementor.basic();
 
 		for (int step = 0; doIterate(conf, loop, step); ++step) {
 			if (step != 0)
-				world = world.nextWorld();
+				world = incrementor.next(world);
 
 			loop = conf.loopDetector.addSimulationStepAndDetect(world);
 
@@ -36,7 +37,8 @@ public class Simulation {
 		return step <= conf.stepLimit && !loop.isPresent();
 	}
 
-	private boolean doPrintStep(SimulationConfig conf, OptionalInt loop, int step) {
+	private boolean doPrintStep(SimulationConfig conf, OptionalInt loop,
+			int step) {
 		return !conf.quietMode || step == conf.stepLimit || loop.isPresent();
 	}
 }
