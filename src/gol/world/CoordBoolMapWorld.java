@@ -3,10 +3,6 @@ package gol.world;
 import static gol.Cell.cell;
 import gol.Cell;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class CoordBoolMapWorld implements World {
@@ -38,32 +34,21 @@ public class CoordBoolMapWorld implements World {
 
 	@Override
 	public World nextWorld() {
-		return new CoordBoolMapWorld(nextWorldSet());
-	}
-
-	private Set<Cell> nextWorldSet() {
-
-		Set<Cell> result = new HashSet<>();
+		World world = World.create();
 
 		for (Cell c : getAliveCells())
-			result.addAll(getAllNextGenNearbyCells(c));
+			getAllNextGenNearbyCells(world, c);
 
-		return result;
+		return world;
 	}
 
-	private Collection<Cell> getAllNextGenNearbyCells(Cell c) {
-
-		List<Cell> result = new ArrayList<>();
-
+	private void getAllNextGenNearbyCells(World world, Cell c) {
 		for (Cell neighbour : ALL_DIRECTIONS)
 			if (willLive(c.add(neighbour)))
-				result.add(c.add(neighbour));
+				world.setAlive(c.add(neighbour));
 
 		if (willLive(c))
-			result.add(c);
-
-		return result;
-
+			world.setAlive(c);
 	}
 
 	private boolean willLive(Cell cell) {
