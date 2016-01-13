@@ -16,6 +16,6 @@ public interface World {
 	public abstract World nextWorld();
 
 	public static World create() {
-		return new AliveCellsWorld(new HashSet<>());
+		return new CoordBoolMapWorld(new HashSet<>());
 	}
 }
