@@ -82,4 +82,9 @@ public class CoordBoolMapWorld implements World {
 	public void setAlive(int x, int y) {
 		map.setTrue(x, y);
 	}
+
+	@Override
+	public void setAlive(Cell c) {
+		setAlive(c.x, c.y);
+	}
 }

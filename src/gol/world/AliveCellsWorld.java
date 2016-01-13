@@ -79,6 +79,11 @@ public class AliveCellsWorld implements World {
 
 	@Override
 	public void setAlive(int x, int y) {
-		aliveCells.add(cell(x, y));
+		setAlive(cell(x, y));
+	}
+
+	@Override
+	public void setAlive(Cell cell) {
+		aliveCells.add(cell);
 	}
 }
