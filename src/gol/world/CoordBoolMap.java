@@ -25,10 +25,14 @@ public interface CoordBoolMap {
 
 			@Override
 			public void setTrue(int x, int y) {
-				if (!map.containsKey(y))
-					map.put(y, new HashSet<Integer>());
+				Set<Integer> line = map.get(y);
 
-				map.get(y).add(x);
+				if (line == null) {
+					line = new HashSet<Integer>();
+					map.put(y, line);
+				}
+
+				line.add(x);
 			}
 
 			@Override
