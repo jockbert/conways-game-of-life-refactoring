@@ -44,6 +44,8 @@ public interface WorldIncrementor {
 				for (Cell neighbour : ALL_DIRECTIONS) {
 					if (oldWorld.isAlive(cell.add(neighbour)))
 						count++;
+					if (count > 3)
+						return false;
 				}
 
 				return count == 3 || (count == 2 && oldWorld.isAlive(cell));
