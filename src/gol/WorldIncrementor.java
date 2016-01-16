@@ -23,12 +23,12 @@ public interface WorldIncrementor {
 				newWorld = World.create();
 
 				for (Cell c : oldWorld.getAliveCells())
-					getAllNextGenNearbyCells(c);
+					calcNextGenAliveCellsNearby(c);
 
 				return newWorld;
 			}
 
-			private void getAllNextGenNearbyCells(Cell c) {
+			private void calcNextGenAliveCellsNearby(Cell c) {
 				for (Cell neighbour : ALL_DIRECTIONS)
 					if (willLive(c.add(neighbour)))
 						newWorld.setAlive(c.add(neighbour));
