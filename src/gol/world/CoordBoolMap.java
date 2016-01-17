@@ -5,15 +5,17 @@ import gol.Cell;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-public interface CoordBoolMap {
+public interface CoordBoolMap extends Iterable<Cell> {
 
 	boolean isTrue(int x, int y);
 
 	void setTrue(int x, int y);
 
+	@Deprecated
 	Set<Cell> getAllTrue();
 
 	static CoordBoolMap twoDimSetBoolMap() {
@@ -51,6 +53,11 @@ public interface CoordBoolMap {
 				}
 
 				return result;
+			}
+
+			@Override
+			public Iterator<Cell> iterator() {
+				return new NestedMapIterator<>(map, set -> set.iterator());
 			}
 		};
 	}

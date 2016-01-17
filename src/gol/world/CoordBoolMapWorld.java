@@ -3,6 +3,7 @@ package gol.world;
 import static gol.Cell.cell;
 import gol.Cell;
 
+import java.util.Iterator;
 import java.util.Set;
 
 public class CoordBoolMapWorld implements World {
@@ -32,5 +33,10 @@ public class CoordBoolMapWorld implements World {
 	@Override
 	public void setAlive(Cell c) {
 		setAlive(c.x, c.y);
+	}
+
+	@Override
+	public Iterator<Cell> iterator() {
+		return map.iterator();
 	}
 }

@@ -2,9 +2,10 @@ package gol.world;
 
 import gol.Cell;
 
+import java.util.Iterator;
 import java.util.Set;
 
-public interface World {
+public interface World extends Iterable<Cell> {
 
 	public abstract boolean isAlive(int x, int y);
 
