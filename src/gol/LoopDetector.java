@@ -1,11 +1,10 @@
 package gol;
 
+import gol.world.World;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.OptionalInt;
-import java.util.Set;
-
-import gol.world.World;
 
 public interface LoopDetector {
 
@@ -23,7 +22,7 @@ public interface LoopDetector {
 	static LoopDetector ofMaxLength(int maxLoopLength) {
 
 		return new LoopDetector() {
-			private List<Set<Cell>> history = new LinkedList<>();
+			private List<World> history = new LinkedList<>();
 
 			@Override
 			public OptionalInt addSimulationStepAndDetect(World world) {
@@ -33,8 +32,7 @@ public interface LoopDetector {
 			}
 
 			private OptionalInt detectLoop(World world) {
-				Set<Cell> itemToFind = world.getAliveCells();
-				return indexToResult(history.indexOf(itemToFind));
+				return indexToResult(history.indexOf(world));
 			}
 
 			private OptionalInt indexToResult(int index) {
@@ -45,7 +43,7 @@ public interface LoopDetector {
 			}
 
 			private void addToHistory(World world) {
-				history.add(0, world.getAliveCells());
+				history.add(0, world);
 				if (history.size() == maxLoopLength + 1)
 					history.remove(maxLoopLength);
 			}
