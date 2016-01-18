@@ -1,9 +1,9 @@
 package gol;
 
+import gol.Simulation.SimulationConfig;
+
 import java.util.Optional;
 import java.util.OptionalInt;
-
-import gol.Simulation.SimulationConfig;
 
 public class GameOfLife {
 
@@ -43,7 +43,8 @@ public class GameOfLife {
 		parser.intArg("-s", n -> conf.stepLimit = opt(conf.stepLimit.orElse(n)));
 		parser.intArg("-w", n -> conf.width = opt(n));
 		parser.intArg("-h", n -> conf.height = opt(n));
-		parser.intArg("-l", n -> conf.loopDetector = LoopDetector.ofMaxLength(n));
+		parser.intArg("-l",
+				n -> conf.loopDetector = LoopDetector.ofMaxLength(n));
 		parser.intArg("-t", n -> conf.periodicBlocker.setPeriod(n));
 
 		parser.flag("-?", () -> gotoHelp("Help requested"));

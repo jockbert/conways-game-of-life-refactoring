@@ -1,5 +1,10 @@
 package gol.performance;
 
+import gol.execution.Executor;
+import gol.execution.Result;
+import gol.execution.SeparateProcessExecutor;
+import gol.execution.TimedExecutor;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -10,11 +15,6 @@ import java.util.Random;
 import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import gol.execution.Executor;
-import gol.execution.Result;
-import gol.execution.SeparateProcessExecutor;
-import gol.execution.TimedExecutor;
 
 /**
  * Step 1 - Remove @Ignore annotation.
