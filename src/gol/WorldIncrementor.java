@@ -22,7 +22,7 @@ public interface WorldIncrementor {
 				oldWorld = world;
 				newWorld = World.create();
 
-				for (Cell c : oldWorld.getAliveCells())
+				for (Cell c : oldWorld)
 					calcNextGenAliveCellsNearby(c);
 
 				return newWorld;
