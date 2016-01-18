@@ -3,7 +3,6 @@ package gol.world;
 import gol.Cell;
 
 import java.util.Iterator;
-import java.util.Set;
 
 public interface World extends Iterable<Cell> {
 
@@ -14,9 +13,6 @@ public interface World extends Iterable<Cell> {
 	public abstract void setAlive(int x, int y);
 
 	public abstract void setAlive(Cell cell);
-
-	@Deprecated
-	public abstract Set<Cell> getAliveCells();
 
 	public static World create() {
 		return withHashAndEquals(new CoordBoolMapWorld());
@@ -52,11 +48,6 @@ public interface World extends Iterable<Cell> {
 			public void setAlive(Cell cell) {
 				world.setAlive(cell);
 				hc = null;
-			}
-
-			@Override
-			public Set<Cell> getAliveCells() {
-				return world.getAliveCells();
 			}
 
 			@Override

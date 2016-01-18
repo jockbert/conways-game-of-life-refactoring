@@ -4,7 +4,6 @@ import static gol.Cell.cell;
 import gol.Cell;
 
 import java.util.Iterator;
-import java.util.Set;
 
 public class CoordBoolMapWorld implements World {
 
@@ -18,11 +17,6 @@ public class CoordBoolMapWorld implements World {
 	@Override
 	public boolean isAlive(Cell c) {
 		return map.isTrue(c.x, c.y);
-	}
-
-	@Override
-	public Set<Cell> getAliveCells() {
-		return map.getAllTrue();
 	}
 
 	@Override
