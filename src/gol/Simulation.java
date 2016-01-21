@@ -18,7 +18,7 @@ public class Simulation {
 	void runSimulation(SimulationConfig conf) {
 		OptionalInt loop = OptionalInt.empty();
 		World world = conf.world;
-		WorldIncrementor incrementor = WorldIncrementor.basic();
+		WorldIncrementor incrementor = WorldIncrementor.usingCountMap();
 
 		for (int step = 0; doIterate(conf, loop, step); ++step) {
 			if (step != 0)
