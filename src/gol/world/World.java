@@ -8,8 +8,6 @@ public interface World extends Iterable<Cell> {
 
 	public abstract boolean isAlive(int x, int y);
 
-	public abstract boolean isAlive(Cell cell);
-
 	public abstract void setAlive(int x, int y);
 
 	public abstract void setAlive(Cell cell);
@@ -33,11 +31,6 @@ public interface World extends Iterable<Cell> {
 			@Override
 			public boolean isAlive(int x, int y) {
 				return world.isAlive(x, y);
-			}
-
-			@Override
-			public boolean isAlive(Cell cell) {
-				return world.isAlive(cell);
 			}
 
 			@Override
@@ -78,12 +71,12 @@ public interface World extends Iterable<Cell> {
 				World otherWorld = (World) other;
 
 				for (Cell c : this) {
-					if (!otherWorld.isAlive(c))
+					if (!otherWorld.isAlive(c.x, c.y))
 						return false;
 				}
 
 				for (Cell c : otherWorld) {
-					if (!this.isAlive(c))
+					if (!this.isAlive(c.x, c.y))
 						return false;
 				}
 				return true;

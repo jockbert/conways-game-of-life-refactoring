@@ -74,11 +74,6 @@ public class BitSetWorld implements World {
 	}
 
 	@Override
-	public boolean isAlive(Cell cell) {
-		return isAlive(cell.x, cell.y);
-	}
-
-	@Override
 	public void setAlive(int x, int y) {
 		while (yIndex(y) < 0)
 			shiftDown();
