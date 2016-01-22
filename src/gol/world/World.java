@@ -15,7 +15,7 @@ public interface World extends Iterable<Cell> {
 	public abstract void setAlive(Cell cell);
 
 	public static World create() {
-		return withHashAndEquals(new CoordBoolMapWorld());
+		return withHashAndEquals(new BitSetWorld());
 	}
 
 	public static World withHashAndEquals(World world) {
