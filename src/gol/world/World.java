@@ -10,8 +10,6 @@ public interface World extends Iterable<Cell> {
 
 	public abstract void setAlive(int x, int y);
 
-	public abstract void setAlive(Cell cell);
-
 	public abstract World nextWorld();
 
 	public static World create() {
@@ -36,12 +34,6 @@ public interface World extends Iterable<Cell> {
 			@Override
 			public void setAlive(int x, int y) {
 				world.setAlive(x, y);
-				hc = null;
-			}
-
-			@Override
-			public void setAlive(Cell cell) {
-				world.setAlive(cell);
 				hc = null;
 			}
 

@@ -95,11 +95,6 @@ public class BitSetWorld implements World {
 		yStart -= 10;
 	}
 
-	@Override
-	public void setAlive(Cell cell) {
-		setAlive(cell.x, cell.y);
-	}
-
 	static class Line implements Iterable<Integer> {
 		int xStart = 0;
 		BitSet bs = new BitSet();
