@@ -14,6 +14,8 @@ public interface World extends Iterable<Cell> {
 
 	public abstract void setAlive(Cell cell);
 
+	public abstract World nextWorld();
+
 	public static World create() {
 		return withHashAndEquals(new BitSetWorld());
 	}
@@ -85,6 +87,11 @@ public interface World extends Iterable<Cell> {
 						return false;
 				}
 				return true;
+			}
+
+			@Override
+			public World nextWorld() {
+				return withHashAndEquals(world.nextWorld());
 			}
 		};
 	}

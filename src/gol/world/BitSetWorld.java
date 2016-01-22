@@ -4,8 +4,11 @@ import gol.Cell;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 public class BitSetWorld implements World {
@@ -149,9 +152,82 @@ public class BitSetWorld implements World {
 				public Integer next() {
 					int result = bs.nextSetBit(min);
 					min = result + 1;
-					return result;
+					return result + xStart;
 				}
 			};
 		}
+	}
+
+	@Override
+	public World nextWorld() {
+
+		World nextWorld = new BitSetWorld();
+		BookKeeper bk = new BookKeeper(yStart);
+
+		for (int yIndex = 0; yIndex < lines.size(); yIndex++) {
+			Line line = lines.get(yIndex);
+
+			for (int x : line)
+				bk.set(x);
+
+			processLine(nextWorld, bk);
+		}
+
+		processLine(nextWorld, bk);
+		processLine(nextWorld, bk);
+		processLine(nextWorld, bk);
+
+		return nextWorld;
+	}
+
+	private void processLine(World nextWorld, BookKeeper bk) {
+		int y = bk.line1Y;
+		for (Entry<Integer, Integer> entry : bk.count1.entrySet()) {
+			int x = entry.getKey();
+			int count = entry.getValue();
+
+			boolean isAlive = count == 3 || (count == 2 && this.isAlive(x, y));
+
+			if (isAlive)
+				nextWorld.setAlive(x, y);
+		}
+
+		bk.shift();
+	}
+
+	private static class BookKeeper {
+		Map<Integer, Integer> count1 = new HashMap<>();
+		Map<Integer, Integer> count2 = new HashMap<>();
+		Map<Integer, Integer> count3 = new HashMap<>();
+		int line1Y;
+
+		public BookKeeper(int yStart) {
+			line1Y = yStart - 1;
+		}
+
+		void shift() {
+			count1 = count2;
+			count2 = count3;
+			count3 = new HashMap<>();
+			line1Y++;
+		}
+
+		private void inc(Map<Integer, Integer> count, int x) {
+			count.put(x, count.getOrDefault(x, 0) + 1);
+		}
+
+		void set(int x) {
+			inc(count1, x - 1);
+			inc(count1, x);
+			inc(count1, x + 1);
+
+			inc(count2, x - 1);
+			inc(count2, x + 1);
+
+			inc(count3, x - 1);
+			inc(count3, x);
+			inc(count3, x + 1);
+		}
+
 	}
 }
