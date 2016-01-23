@@ -6,9 +6,12 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 public class GameOfLife {
+	private static final int DEFAULT_HEIGHT = 15;
+	private static final int DEFAULT_WIDTH = 20;
+	private static final int DEFAULT_STEP_LIMIT = 100;
 
 	static class ProgramConfig {
-		int stepLimit = 100;
+		int stepLimit = DEFAULT_STEP_LIMIT;
 		OptionalInt height = OptionalInt.empty();
 		OptionalInt width = OptionalInt.empty();
 		boolean quietMode = false;
@@ -21,7 +24,7 @@ public class GameOfLife {
 	public static void main(String[] args) {
 
 		try {
-			Setup setup = new Setup(20, 15);
+			Setup setup = new Setup(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 			ProgramConfig progConf = parseArguments(args);
 			SimulationConfig simConf = setup.programToSimulationConf(progConf);
 
