@@ -8,7 +8,7 @@ import java.util.OptionalInt;
 public class GameOfLife {
 
 	static class ProgramConfig {
-		OptionalInt stepLimit = OptionalInt.empty();
+		int stepLimit = 100;
 		OptionalInt height = OptionalInt.empty();
 		OptionalInt width = OptionalInt.empty();
 		boolean quietMode = false;
@@ -21,7 +21,7 @@ public class GameOfLife {
 	public static void main(String[] args) {
 
 		try {
-			Setup setup = new Setup(20, 15, 100);
+			Setup setup = new Setup(20, 15);
 			ProgramConfig progConf = parseArguments(args);
 			SimulationConfig simConf = setup.programToSimulationConf(progConf);
 
@@ -40,7 +40,7 @@ public class GameOfLife {
 		parser.onError(GameOfLife::gotoHelp);
 		parser.strArg("-f", s -> conf.filePath = Optional.of(s));
 
-		parser.intArg("-s", n -> conf.stepLimit = opt(conf.stepLimit.orElse(n)));
+		parser.intArg("-s", n -> conf.stepLimit = n);
 		parser.intArg("-w", n -> conf.width = opt(n));
 		parser.intArg("-h", n -> conf.height = opt(n));
 		parser.intArg("-l",

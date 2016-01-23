@@ -14,16 +14,14 @@ public class Setup {
 
 	private int defaultWidth;
 	private int defaultHeight;
-	private int defaultStepLimit;
 
-	Setup(int defaultWidth, int defaultHeight, int defaultStepLimit) {
+	Setup(int defaultWidth, int defaultHeight) {
 		this.defaultWidth = defaultWidth;
 		this.defaultHeight = defaultHeight;
-		this.defaultStepLimit = defaultStepLimit;
 	}
 
 	SimulationConfig programToSimulationConf(ProgramConfig progConf) {
-		
+
 		WorldSource ws = fileWS(progConf).orElseGet(randomWS(progConf));
 		WorldSourceResult result = ws.generate();
 
@@ -32,7 +30,7 @@ public class Setup {
 
 		SimulationConfig simConf = new SimulationConfig();
 		simConf.quietMode = progConf.quietMode;
-		simConf.stepLimit = progConf.stepLimit.orElse(defaultStepLimit);
+		simConf.stepLimit = progConf.stepLimit;
 		simConf.loopDetector = progConf.loopDetector;
 		simConf.periodicBlocker = progConf.periodicBlocker;
 		simConf.world = result.world();
