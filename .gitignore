@@ -3,3 +3,4 @@
 bin/**
 examples/perfTestExtreme
 examples/perfTestLarge
+world-file*
