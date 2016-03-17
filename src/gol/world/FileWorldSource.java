@@ -46,12 +46,24 @@ public class FileWorldSource implements WorldSource {
 		scanner.close();
 	}
 
+	private void doThrow(String msg) {
+		throw new RuntimeException(msg);
+	}
+
 	private Scanner openScanner() {
+
+		File source = new File(filePath);
+		if (!source.exists())
+			doThrow(filePath + " (No such file or directory)");
+		else if (source.isDirectory())
+			doThrow(filePath + " (Is a directory)");
+
 		try {
-			return new Scanner(new File(filePath));
+			return new Scanner(source);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e.getMessage());
+			doThrow(e.getMessage());
 		}
+		return null;
 	}
 
 	private void ensureValidCharacters(int lineNumber, String line) {
