@@ -95,6 +95,27 @@ public class BitSetWorld implements World {
 		yStart -= 10;
 	}
 
+	@Override
+	public String toString() {
+		int height = yStart + lines.size();
+
+		String result = "";
+
+		for (int y = 0; y < height; y++) {
+
+			Line line = lines.get(yIndex(y));
+
+			int width = line.xStart + line.bs.length();
+
+			for (int x = 0; x < width; x++)
+				result += (line.isSet(x)) ? '#' : '-';
+
+			result += '\n';
+		}
+
+		return result;
+	}
+
 	static class Line implements Iterable<Integer> {
 		int xStart = 0;
 		BitSet bs = new BitSet();

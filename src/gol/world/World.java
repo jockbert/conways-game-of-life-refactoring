@@ -78,6 +78,11 @@ public interface World extends Iterable<Cell> {
 			public World nextWorld() {
 				return withHashAndEquals(world.nextWorld());
 			}
+
+			@Override
+			public String toString() {
+				return world.toString();
+			}
 		};
 	}
 }
