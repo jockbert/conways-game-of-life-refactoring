@@ -28,14 +28,15 @@ public class GameOfLife {
 			Setup setup = new Setup(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 			ProgramConfig progConf = parseArguments(args);
 
-			boolean hasNoInputFile = !progConf.filePath.isPresent();
+			boolean hasInputFile = progConf.filePath.isPresent();
 			boolean hasNoSteps = progConf.stepLimit == 0;
 			int width = progConf.width.orElse(DEFAULT_WIDTH);
 			int height = progConf.height.orElse(DEFAULT_HEIGHT);
 			OutputFormat outputFormat = progConf.outputFormat;
 
-			if (hasNoSteps && hasNoInputFile) {
+			if (hasNoSteps && !hasInputFile) {
 				printZeroStepRandomWorld(width, height, outputFormat);
+
 			} else {
 
 				SimulationConfig simConf = setup
