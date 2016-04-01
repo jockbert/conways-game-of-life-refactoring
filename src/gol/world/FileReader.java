@@ -46,7 +46,7 @@ public class FileReader {
 		}
 
 		int height = y + (x != 0 ? 1 : 0);
-		return WorldResult.result(world, maxWidth, height);
+		return new WorldResult(world, maxWidth, height);
 	}
 
 	private InputStream openStream(String filePath) {

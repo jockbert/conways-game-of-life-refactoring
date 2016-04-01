@@ -1,30 +1,16 @@
 package gol.world;
 
-public interface WorldResult {
+public final class WorldResult {
 
-		World world();
+	public final World world;
 
-		int width();
+	public final int width;
 
-		int height();
+	public final int height;
 
-	static WorldResult result(World world, int width, int height) {
-		return new WorldResult() {
-
-			@Override
-			public World world() {
-				return world;
-			}
-
-			@Override
-			public int width() {
-				return width;
-			}
-
-			@Override
-			public int height() {
-				return height;
-			}
-		};
+	WorldResult(World world, int width, int height) {
+		this.world = world;
+		this.width = width;
+		this.height = height;
 	}
 }

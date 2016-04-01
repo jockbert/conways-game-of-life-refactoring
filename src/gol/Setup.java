@@ -36,9 +36,9 @@ public class Setup {
 		if (filePath.isPresent()) {
 			WorldResult result = readFile(filePath.get());
 
-			world = result.world();
-			width = progConf.width.orElse(result.width());
-			height = progConf.height.orElse(result.height());
+			world = result.world;
+			width = progConf.width.orElse(result.width);
+			height = progConf.height.orElse(result.height);
 		} else {
 			width = progConf.width.orElse(DEFAULT_WIDTH);
 			height = progConf.height.orElse(DEFAULT_HEIGHT);
