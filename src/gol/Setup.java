@@ -1,6 +1,5 @@
 package gol;
 
-import gol.GameOfLife.ProgramConfig;
 import gol.Simulation.SimulationConfig;
 import gol.world.FileReader;
 import gol.world.World;
@@ -8,15 +7,23 @@ import gol.world.WorldGenerator;
 import gol.world.WorldResult;
 
 import java.util.Optional;
+import java.util.OptionalInt;
 
 public class Setup {
 
-	private int defaultWidth;
-	private int defaultHeight;
+	static final int DEFAULT_HEIGHT = 15;
+	static final int DEFAULT_WIDTH = 20;
+	static final int DEFAULT_STEP_LIMIT = 100;
 
-	Setup(int defaultWidth, int defaultHeight) {
-		this.defaultWidth = defaultWidth;
-		this.defaultHeight = defaultHeight;
+	static class ProgramConfig {
+		int stepLimit = DEFAULT_STEP_LIMIT;
+		OptionalInt height = OptionalInt.empty();
+		OptionalInt width = OptionalInt.empty();
+		boolean quietMode = false;
+		OutputFormat outputFormat = OutputFormat.defaultHashDash();
+		PeriodicBlocker periodicBlocker = PeriodicBlocker.defaultWithNoPeriod();
+		LoopDetector loopDetector = LoopDetector.none();
+		Optional<String> filePath = Optional.empty();
 	}
 
 	SimulationConfig programToSimulationConf(ProgramConfig progConf) {
@@ -33,8 +40,8 @@ public class Setup {
 			width = progConf.width.orElse(result.width());
 			height = progConf.height.orElse(result.height());
 		} else {
-			width = progConf.width.orElse(defaultWidth);
-			height = progConf.height.orElse(defaultHeight);
+			width = progConf.width.orElse(DEFAULT_WIDTH);
+			height = progConf.height.orElse(DEFAULT_HEIGHT);
 			world = WorldGenerator.randomGenerator().generate(width, height);
 		}
 

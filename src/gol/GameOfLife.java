@@ -1,5 +1,6 @@
 package gol;
 
+import gol.Setup.ProgramConfig;
 import gol.Simulation.SimulationConfig;
 
 import java.util.Optional;
@@ -7,31 +8,17 @@ import java.util.OptionalInt;
 import java.util.Random;
 
 public class GameOfLife {
-	private static final int DEFAULT_HEIGHT = 15;
-	private static final int DEFAULT_WIDTH = 20;
-	private static final int DEFAULT_STEP_LIMIT = 100;
-
-	static class ProgramConfig {
-		int stepLimit = DEFAULT_STEP_LIMIT;
-		OptionalInt height = OptionalInt.empty();
-		OptionalInt width = OptionalInt.empty();
-		boolean quietMode = false;
-		OutputFormat outputFormat = OutputFormat.defaultHashDash();
-		PeriodicBlocker periodicBlocker = PeriodicBlocker.defaultWithNoPeriod();
-		LoopDetector loopDetector = LoopDetector.none();
-		Optional<String> filePath = Optional.empty();
-	}
 
 	public static void main(String[] args) {
 
 		try {
-			Setup setup = new Setup(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+			Setup setup = new Setup();
 			ProgramConfig progConf = parseArguments(args);
 
 			boolean hasInputFile = progConf.filePath.isPresent();
 			boolean hasNoSteps = progConf.stepLimit == 0;
-			int width = progConf.width.orElse(DEFAULT_WIDTH);
-			int height = progConf.height.orElse(DEFAULT_HEIGHT);
+			int width = progConf.width.orElse(Setup.DEFAULT_WIDTH);
+			int height = progConf.height.orElse(Setup.DEFAULT_HEIGHT);
 			OutputFormat outputFormat = progConf.outputFormat;
 
 			if (hasNoSteps && !hasInputFile) {
