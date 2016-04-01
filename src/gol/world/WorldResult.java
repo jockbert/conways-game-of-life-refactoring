@@ -1,19 +1,15 @@
 package gol.world;
 
-public interface WorldSource {
+public interface WorldResult {
 
-	WorldSourceResult generate();
-
-	interface WorldSourceResult {
 		World world();
 
 		int width();
 
 		int height();
-	}
 
-	static WorldSourceResult result(World world, int width, int height) {
-		return new WorldSourceResult() {
+	static WorldResult result(World world, int width, int height) {
+		return new WorldResult() {
 
 			@Override
 			public World world() {

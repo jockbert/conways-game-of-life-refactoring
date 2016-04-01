@@ -7,18 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class FileWorldSource implements WorldSource {
+public class FileReader {
 
-	private String filePath;
+	public WorldResult read(String filePath) {
 
-	public FileWorldSource(String filePath) {
-		this.filePath = filePath;
-	}
-
-	@Override
-	public WorldSourceResult generate() {
-
-		InputStream is = openStream();
+		InputStream is = openStream(filePath);
 
 		int y = 0;
 		int x = 0;
@@ -43,7 +36,7 @@ public class FileWorldSource implements WorldSource {
 					break;
 
 				default:
-					throwInvalidCharacter((char) i, y + 1);
+					throwInvalidCharacter((char) i, y + 1, filePath);
 				}
 			}
 			maxWidth = Math.max(maxWidth, x);
@@ -53,10 +46,10 @@ public class FileWorldSource implements WorldSource {
 		}
 
 		int height = y + (x != 0 ? 1 : 0);
-		return WorldSource.result(world, maxWidth, height);
+		return WorldResult.result(world, maxWidth, height);
 	}
 
-	private InputStream openStream() {
+	private InputStream openStream(String filePath) {
 		File source = new File(filePath);
 		if (!source.exists())
 			doThrow(filePath + " (No such file or directory)");
@@ -72,7 +65,7 @@ public class FileWorldSource implements WorldSource {
 		return is;
 	}
 
-	private void throwInvalidCharacter(char c, int lineNumber) {
+	private void throwInvalidCharacter(char c, int lineNumber, String filePath) {
 		String format = "Invalid character '%s' on line %s in file %s";
 		String message = String.format(format, c, lineNumber, filePath);
 		doThrow(message);

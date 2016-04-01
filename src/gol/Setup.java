@@ -2,10 +2,10 @@ package gol;
 
 import gol.GameOfLife.ProgramConfig;
 import gol.Simulation.SimulationConfig;
-import gol.world.FileWorldSource;
+import gol.world.FileReader;
 import gol.world.World;
 import gol.world.WorldGenerator;
-import gol.world.WorldSource.WorldSourceResult;
+import gol.world.WorldResult;
 
 import java.util.Optional;
 
@@ -27,7 +27,7 @@ public class Setup {
 
 		Optional<String> filePath = progConf.filePath;
 		if (filePath.isPresent()) {
-			WorldSourceResult result = readFile(filePath);
+			WorldResult result = readFile(filePath.get());
 
 			world = result.world();
 			width = progConf.width.orElse(result.width());
@@ -48,8 +48,8 @@ public class Setup {
 		return simConf;
 	}
 
-	private WorldSourceResult readFile(Optional<String> filePath) {
-		return new FileWorldSource(filePath.get()).generate();
+	private WorldResult readFile(String filePath) {
+		return new FileReader().read(filePath);
 	}
 
 	private StepPrinter stepPrinter(ProgramConfig progConf, int width,
