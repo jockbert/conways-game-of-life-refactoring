@@ -30,8 +30,7 @@ public class GameOfLife {
 		parser.intArg("-s", n -> conf.stepLimit = n);
 		parser.intArg("-w", n -> conf.width = opt(n));
 		parser.intArg("-h", n -> conf.height = opt(n));
-		parser.intArg("-l",
-				n -> conf.loopDetector = LoopDetector.ofMaxLength(n));
+		parser.intArg("-l", n -> conf.loopDetector = LoopDetector.ofLength(n));
 		parser.intArg("-t", n -> conf.periodicBlocker.setPeriod(n));
 
 		parser.flag("-?", () -> gotoHelp("Help requested"));

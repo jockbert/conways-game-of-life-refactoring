@@ -19,7 +19,7 @@ public interface LoopDetector {
 		};
 	}
 
-	static LoopDetector ofMaxLength(int maxLoopLength) {
+	static LoopDetector ofLength(int maxLoopLength) {
 
 		return new LoopDetector() {
 			private List<World> history = new LinkedList<>();
