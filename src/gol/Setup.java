@@ -1,6 +1,6 @@
 package gol;
 
-import gol.Simulation.SimulationConfig;
+import gol.GenericSimulation.SimulationConfig;
 import gol.world.FileReader;
 import gol.world.World;
 import gol.world.WorldGenerator;

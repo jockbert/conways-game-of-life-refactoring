@@ -1,7 +1,7 @@
 package gol;
 
 import gol.Setup.ProgramConfig;
-import gol.Simulation.SimulationConfig;
+import gol.GenericSimulation.SimulationConfig;
 
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -29,7 +29,7 @@ public class GameOfLife {
 				SimulationConfig simConf = setup
 						.programToSimulationConf(progConf);
 
-				new Simulation().runSimulation(simConf);
+				new GenericSimulation(simConf).runSimulation();
 			}
 
 		} catch (Exception e) {
