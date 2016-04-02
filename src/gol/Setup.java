@@ -26,15 +26,17 @@ public class Setup {
 		Optional<String> filePath = Optional.empty();
 	}
 
-	SimulationConfig programToSimulationConf(ProgramConfig progConf) {
+	Simulation buildSimulation(ProgramConfig progConf) {
+
+		boolean hasInputFile = progConf.filePath.isPresent();
+		boolean hasNoSteps = progConf.stepLimit == 0;
 
 		World world;
 		int width;
 		int height;
 
-		Optional<String> filePath = progConf.filePath;
-		if (filePath.isPresent()) {
-			WorldResult result = readFile(filePath.get());
+		if (hasInputFile) {
+			WorldResult result = readFile(progConf.filePath.get());
 
 			world = result.world;
 			width = progConf.width.orElse(result.width);
@@ -42,6 +44,12 @@ public class Setup {
 		} else {
 			width = progConf.width.orElse(DEFAULT_WIDTH);
 			height = progConf.height.orElse(DEFAULT_HEIGHT);
+
+			if (hasNoSteps) {
+				OutputFormat outFormat = progConf.outputFormat;
+				return new ZeroStepRandomSimulation(width, height, outFormat);
+			}
+
 			world = WorldGenerator.randomGenerator().generate(width, height);
 		}
 
@@ -52,7 +60,8 @@ public class Setup {
 		simConf.periodicBlocker = progConf.periodicBlocker;
 		simConf.world = world;
 		simConf.stepPrinter = stepPrinter(progConf, width, height);
-		return simConf;
+
+		return new GenericSimulation(simConf);
 	}
 
 	private WorldResult readFile(String filePath) {

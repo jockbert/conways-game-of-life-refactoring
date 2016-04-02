@@ -1,11 +1,9 @@
 package gol;
 
 import gol.Setup.ProgramConfig;
-import gol.GenericSimulation.SimulationConfig;
 
 import java.util.Optional;
 import java.util.OptionalInt;
-import java.util.Random;
 
 public class GameOfLife {
 
@@ -14,43 +12,11 @@ public class GameOfLife {
 		try {
 			Setup setup = new Setup();
 			ProgramConfig progConf = parseArguments(args);
-
-			boolean hasInputFile = progConf.filePath.isPresent();
-			boolean hasNoSteps = progConf.stepLimit == 0;
-			int width = progConf.width.orElse(Setup.DEFAULT_WIDTH);
-			int height = progConf.height.orElse(Setup.DEFAULT_HEIGHT);
-			OutputFormat outputFormat = progConf.outputFormat;
-
-			if (hasNoSteps && !hasInputFile) {
-				printZeroStepRandomWorld(width, height, outputFormat);
-
-			} else {
-
-				SimulationConfig simConf = setup
-						.programToSimulationConf(progConf);
-
-				new GenericSimulation(simConf).runSimulation();
-			}
+			setup.buildSimulation(progConf).runSimulation();
 
 		} catch (Exception e) {
 			printHelp(e.getMessage());
 		}
-	}
-
-	private static void printZeroStepRandomWorld(int width, int height,
-			OutputFormat format) {
-
-		Random rand = new Random();
-
-		for (int y = 0; y < height; ++y) {
-			StringBuilder sb = new StringBuilder();
-			for (int x = 0; x < width; ++x)
-				sb.append(format.cell(rand.nextBoolean()));
-			System.out.println(sb.toString());
-		}
-
-		System.out.println("start");
-		System.out.println();
 	}
 
 	private static ProgramConfig parseArguments(String[] args) throws Exception {
