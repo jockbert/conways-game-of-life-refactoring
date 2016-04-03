@@ -1,6 +1,6 @@
 package gol.world.neo;
 
-public class ByteArrLine implements Line {
+public class ByteArrLine implements Line, Segmented {
 
 	public byte[] arr = null;
 	public int arrOffset = 0;
@@ -73,7 +73,7 @@ public class ByteArrLine implements Line {
 	}
 
 	@Override
-	public boolean get(int i) {
+	public boolean isSet(int i) {
 		return (byteOf(i) & maskOf(i)) != 0;
 	}
 
@@ -87,5 +87,28 @@ public class ByteArrLine implements Line {
 
 	private int maskOf(int i) {
 		return 1 << bitIndexOf(i);
+	}
+
+	@Override
+	public int minIndex() {
+		return arr == null? 0 : arrOffset;
+	}
+
+	@Override
+	public int maxIndex() {
+		return arr == null? 0 : arrOffset + arr.length -1;
+	}
+
+	@Override
+	public byte getByte(int index) {
+		int arrIndex = index - arrOffset;
+		boolean isInRange = ((arrIndex >= minIndex()) && (arrIndex <= maxIndex()));
+		boolean isDefined = arr != null;
+		return isInRange && isDefined ? arr[arrIndex]: 0;
+	}
+
+	@Override
+	public boolean hasBytes() {
+		return arr != null;
 	}
 }

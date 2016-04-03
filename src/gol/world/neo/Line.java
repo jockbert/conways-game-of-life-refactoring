@@ -4,6 +4,5 @@ public interface Line {
 
 	void set(int i);
 
-	boolean get(int i);
-
+	boolean isSet(int i);
 }

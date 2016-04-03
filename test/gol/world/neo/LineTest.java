@@ -16,15 +16,15 @@ public abstract class LineTest {
 		l.set(3);
 		l.set(-7);
 
-		assertFalse(l.get(-8));
-		assertTrue(l.get(-7));
-		assertFalse(l.get(-6));
+		assertFalse(l.isSet(-8));
+		assertTrue(l.isSet(-7));
+		assertFalse(l.isSet(-6));
 
-		assertFalse(l.get(0));
-		assertTrue(l.get(1));
-		assertFalse(l.get(2));
-		assertTrue(l.get(3));
-		assertFalse(l.get(4));
+		assertFalse(l.isSet(0));
+		assertTrue(l.isSet(1));
+		assertFalse(l.isSet(2));
+		assertTrue(l.isSet(3));
+		assertFalse(l.isSet(4));
 	}
 
 	protected abstract Line line();
