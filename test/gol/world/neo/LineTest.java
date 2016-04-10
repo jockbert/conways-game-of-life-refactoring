@@ -1,5 +1,6 @@
 package gol.world.neo;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -44,4 +45,10 @@ public abstract class LineTest {
 		l.set(3);
 	}
 
+	@Test
+	public void testUninitialized() throws Exception {
+		assertFalse(l.isSet(0));
+		assertEquals(Integer.MAX_VALUE, l.minSetBit());
+		assertEquals(Integer.MIN_VALUE, l.maxSetBit());
+	}
 }

@@ -25,26 +25,27 @@ public final class BasicLine implements Line {
 
 	@Override
 	public boolean isSet(int index) {
-		int bitSetIndex = index - offset;
-		return bitSetIndex >= 0 && bs.get(bitSetIndex);
+		if (isEmpty) {
+			return false;
+		} else {
+			int bitSetIndex = index - offset;
+			return bitSetIndex >= 0 && bs.get(bitSetIndex);
+		}
 	}
 
 	@Override
 	public int minSetBit() {
 		if (isEmpty) {
-			// TODO testcase for this
+			return Integer.MAX_VALUE;
 		} else {
 			return offset;
 		}
-
-		return 0;
 	}
 
 	@Override
 	public int maxSetBit() {
 		if (isEmpty) {
-			// TODO testcase for this
-			return 1234;
+			return Integer.MIN_VALUE;
 		} else {
 			return offset + bs.length();
 		}
