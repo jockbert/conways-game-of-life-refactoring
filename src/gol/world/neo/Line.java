@@ -11,4 +11,6 @@ public interface Line {
 	int maxSetBit();
 
 	boolean isEmpty();
+
+	Integer nextAlive(int fromX);
 }

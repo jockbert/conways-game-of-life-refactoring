@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gol.Cell;
+import gol.world.neo.LookupWorld;
 
 import java.util.Iterator;
 
@@ -17,10 +18,17 @@ public abstract class WorldTest {
 
 	private World world = getWorld();
 
-	static class BitSetWorldTest extends WorldTest {
+	public static class BitSetWorldTest extends WorldTest {
 		@Override
 		World getWorld() {
 			return new BitSetWorld();
+		}
+	}
+
+	public static class LookupWorldTest extends WorldTest {
+		@Override
+		World getWorld() {
+			return new LookupWorld();
 		}
 	}
 

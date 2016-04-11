@@ -55,4 +55,12 @@ public final class BasicLine implements Line {
 	public boolean isEmpty() {
 		return isEmpty;
 	}
+
+	@Override
+	public Integer nextAlive(int fromX) {
+		fromX = fromX < minSetBit() ? minSetBit() : fromX;
+
+		int result = bs.nextSetBit(fromX - offset);
+		return result == -1 ? null : result + offset;
+	}
 }
