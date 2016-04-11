@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.NoSuchElementException;
 
 public class BitSetWorld implements World {
 
@@ -17,46 +16,35 @@ public class BitSetWorld implements World {
 	List<Line> lines = new ArrayList<>();
 
 	@Override
-	public Iterator<Cell> iterator() {
+	public Cell firstAlive() {
+		return nextAlive(Cell.MIN);
+	}
 
-		return new Iterator<Cell>() {
-			int nextXIndex = 0;
-			int nextYIndex = 0;
+	@Override
+	public Cell nextAlive(Cell exclusiveStart) {
+		if (lines.isEmpty())
+			return null;
 
-			@Override
-			public boolean hasNext() {
-				if (nextYIndex >= lines.size())
-					return false;
+		Cell start = exclusiveStart.incX();
 
-				Line line = lines.get(nextYIndex);
+		if (start.y < yStart)
+			start = Cell.cell(lines.get(0).xStart, yStart);
 
-				if (nextXIndex == -1) {
-					nextYIndex++;
-					nextXIndex = 0;
-					return hasNext();
-				}
+		while (true) {
+			if (isAlive(start.x, start.y))
+				return start;
 
-				if (line.bs.get(nextXIndex))
-					return true;
+			start = start.incX();
 
-				nextXIndex = line.bs.nextSetBit(nextXIndex);
-
-				return hasNext();
+			int yIndex = start.y - yStart;
+			Line line = lines.get(yIndex);
+			if (start.x > line.bs.length() + line.xStart) {
+				if (start.y < yStart + lines.size() - 1)
+					start = start.incY(lines.get(yIndex + 1).xStart);
+				else
+					return null;
 			}
-
-			@Override
-			public Cell next() {
-				if (!hasNext())
-					throw new NoSuchElementException();
-
-				Line line = lines.get(nextYIndex);
-				int x = line.xStart + nextXIndex;
-				int y = yStart + nextYIndex;
-				nextXIndex++;
-
-				return new Cell(x, y);
-			}
-		};
+		}
 	}
 
 	@Override

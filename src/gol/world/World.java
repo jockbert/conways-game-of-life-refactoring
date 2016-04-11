@@ -4,7 +4,7 @@ import gol.Cell;
 
 import java.util.Iterator;
 
-public interface World extends Iterable<Cell> {
+public interface World {
 
 	public abstract boolean isAlive(int x, int y);
 
@@ -12,19 +12,51 @@ public interface World extends Iterable<Cell> {
 
 	public abstract World nextWorld();
 
+	public abstract Cell firstAlive();
+
+	public abstract Cell nextAlive(Cell exclusiveStart);
+
 	public static World create() {
 		return withHashAndEquals(new BitSetWorld());
+	}
+
+	public static Iterable<Cell> allAlive(World world) {
+		return new AliveIterable(world);
+	}
+
+	public static class AliveIterable implements Iterable<Cell> {
+
+		private World world;
+
+		public AliveIterable(World world) {
+			this.world = world;
+		}
+
+		@Override
+		public Iterator<Cell> iterator() {
+			return new Iterator<Cell>() {
+
+				Cell next = world.firstAlive();
+
+				@Override
+				public boolean hasNext() {
+					return next != null;
+				}
+
+				@Override
+				public Cell next() {
+					Cell result = next;
+					next = world.nextAlive(next);
+					return result;
+				}
+			};
+		}
 	}
 
 	public static World withHashAndEquals(World world) {
 		return new World() {
 
 			Integer hc = null;
-
-			@Override
-			public Iterator<Cell> iterator() {
-				return world.iterator();
-			}
 
 			@Override
 			public boolean isAlive(int x, int y) {
@@ -41,7 +73,7 @@ public interface World extends Iterable<Cell> {
 			public int hashCode() {
 				if (hc == null) {
 					hc = 0;
-					for (Cell c : world) {
+					for (Cell c : allAlive(world)) {
 						hc += c.hashCode();
 					}
 				}
@@ -62,12 +94,12 @@ public interface World extends Iterable<Cell> {
 
 				World otherWorld = (World) other;
 
-				for (Cell c : this) {
+				for (Cell c : allAlive(this)) {
 					if (!otherWorld.isAlive(c.x, c.y))
 						return false;
 				}
 
-				for (Cell c : otherWorld) {
+				for (Cell c : allAlive(otherWorld)) {
 					if (!this.isAlive(c.x, c.y))
 						return false;
 				}
@@ -82,6 +114,16 @@ public interface World extends Iterable<Cell> {
 			@Override
 			public String toString() {
 				return world.toString();
+			}
+
+			@Override
+			public Cell firstAlive() {
+				return world.firstAlive();
+			}
+
+			@Override
+			public Cell nextAlive(Cell exclusiveStart) {
+				return world.nextAlive(exclusiveStart);
 			}
 		};
 	}

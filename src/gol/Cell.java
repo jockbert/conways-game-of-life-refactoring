@@ -1,6 +1,10 @@
 package gol;
 
 public final class Cell {
+
+	public static final Cell MIN = new Cell(Integer.MIN_VALUE,
+			Integer.MIN_VALUE);
+
 	public final int x;
 	public final int y;
 
