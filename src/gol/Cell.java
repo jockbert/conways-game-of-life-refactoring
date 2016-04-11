@@ -17,6 +17,14 @@ public final class Cell {
 		return new Cell(x + other.x, y + other.y);
 	}
 
+	public Cell incX() {
+		return new Cell(x + 1, y);
+	}
+
+	public Cell incY(int newX) {
+		return new Cell(newX, y + 1);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 9973;
