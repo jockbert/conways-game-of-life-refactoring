@@ -11,19 +11,26 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
-public class BitSetWorldTest {
+public abstract class WorldTest {
+
+	abstract World getWorld();
+
+	private World world = getWorld();
+
+	static class BitSetWorldTest extends WorldTest {
+		@Override
+		World getWorld() {
+			return new BitSetWorld();
+		}
+	}
 
 	@Test
 	public void testEmptyWorld() throws Exception {
-		World world = new BitSetWorld();
-
 		assertNull(world.firstAlive());
-
 	}
 
 	@Test
 	public void testOneWorld() throws Exception {
-		World world = new BitSetWorld();
 		world.setAlive(4, 2);
 
 		assertEquals(cell(4, 2), world.firstAlive());
@@ -37,7 +44,6 @@ public class BitSetWorldTest {
 
 	@Test
 	public void testNegativeWorld() throws Exception {
-		World world = new BitSetWorld();
 		world.setAlive(-4, -2);
 
 		assertEquals(cell(-4, -2), world.firstAlive());
@@ -46,8 +52,6 @@ public class BitSetWorldTest {
 
 	@Test
 	public void testTrickyStart() throws Exception {
-
-		World world = new BitSetWorld();
 		world.setAlive(-4, -2);
 
 		assertEquals(cell(-4, -2), world.nextAlive(cell(-40000, -2)));
