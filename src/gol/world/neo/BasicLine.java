@@ -51,4 +51,8 @@ public final class BasicLine implements Line {
 		}
 	}
 
+	@Override
+	public boolean isEmpty() {
+		return isEmpty;
+	}
 }

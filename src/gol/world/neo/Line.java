@@ -9,4 +9,6 @@ public interface Line {
 	int minSetBit();
 
 	int maxSetBit();
+
+	boolean isEmpty();
 }

@@ -51,4 +51,11 @@ public abstract class LineTest {
 		assertEquals(Integer.MAX_VALUE, l.minSetBit());
 		assertEquals(Integer.MIN_VALUE, l.maxSetBit());
 	}
+
+	@Test
+	public void testIsEmpty() throws Exception {
+		assertTrue(l.isEmpty());
+		l.set(12345);
+		assertFalse(l.isEmpty());
+	}
 }
