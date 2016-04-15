@@ -47,7 +47,7 @@ public final class BasicLine implements Line {
 		if (isEmpty) {
 			return Integer.MIN_VALUE;
 		} else {
-			return offset + bs.length();
+			return offset + bs.length() - 1;
 		}
 	}
 

@@ -1,29 +1,39 @@
 package gol.world.neo;
 
-public class LineFragmenter implements Fragmenter {
+public class LineFragments implements Fragments {
 
 	private int fragSize;
 	private Line line;
 
-	public LineFragmenter(int fragSize, Line line) {
+	public LineFragments(int fragSize, Line line) {
 		this.fragSize = fragSize;
 		this.line = line;
 	}
 
 	@Override
-	public int min() {
+	public int minIndex() {
 		if (line.isEmpty())
 			return Integer.MAX_VALUE;
 
-		return line.minSetBit() / fragSize - 1;
+		int minSetBit = line.minSetBit();
+		int minMainFrag = minSetBit / fragSize;
+
+		boolean hasOverlapToNextFrag = minSetBit % fragSize == 0;
+
+		return minMainFrag + (hasOverlapToNextFrag ? -1 : 0);
 	}
 
 	@Override
-	public int max() {
+	public int maxIndex() {
 		if (line.isEmpty())
 			return Integer.MIN_VALUE;
 
-		return line.minSetBit() / fragSize + 1;
+		int maxSetBit = line.maxSetBit();
+		int maxMainFrag = maxSetBit / fragSize;
+
+		boolean hasOverlapToNextFrag = maxSetBit % fragSize == fragSize - 1;
+
+		return maxMainFrag + (hasOverlapToNextFrag ? 1 : 0);
 	}
 
 	@Override
