@@ -28,7 +28,7 @@ public abstract class WorldTest {
 	public static class LookupWorldTest extends WorldTest {
 		@Override
 		World getWorld() {
-			return new LookupWorld();
+			return World.withHashAndEquals(new LookupWorld());
 		}
 	}
 
@@ -64,4 +64,59 @@ public abstract class WorldTest {
 
 		assertEquals(cell(-4, -2), world.nextAlive(cell(-40000, -2)));
 	}
+
+	@Test
+	public void testBlockGeneration() throws Exception {
+		world.setAlive(1, 1);
+		world.setAlive(1, 2);
+		world.setAlive(2, 1);
+		world.setAlive(2, 2);
+
+		World nextWorld = world.nextWorld();
+
+		assertEquals(cell(1, 1), nextWorld.firstAlive());
+		assertEquals(cell(2, 1), nextWorld.nextAlive(cell(1, 1)));
+		assertEquals(cell(1, 2), nextWorld.nextAlive(cell(2, 1)));
+		assertEquals(cell(2, 2), nextWorld.nextAlive(cell(1, 2)));
+		assertEquals(null, nextWorld.nextAlive(cell(2, 2)));
+	}
+
+	@Test
+	public void testGlider() throws Exception {
+		world.setAlive(0, 0);
+		world.setAlive(1, 0);
+
+		world.setAlive(0, 1);
+		world.setAlive(2, 1);
+
+		world.setAlive(0, 2);
+
+		// has period of 4
+		World world1 = world.nextWorld();
+		World world2 = world1.nextWorld();
+		World world3 = world2.nextWorld();
+		World world4 = world3.nextWorld();
+
+		assertEquals(cell(-1, -1), world4.firstAlive());
+		assertEquals(cell(0, -1), world4.nextAlive(cell(-1, -1)));
+		assertEquals(cell(-1, 0), world4.nextAlive(cell(0, -1)));
+		assertEquals(cell(1, 0), world4.nextAlive(cell(-1, 0)));
+		assertEquals(cell(-1, 1), world4.nextAlive(cell(1, 0)));
+		assertEquals(null, world4.nextAlive(cell(-1, 1)));
+
+	}
+
+	@Test
+	public void testSetMixedLines() throws Exception {
+
+		world.setAlive(0, 0);
+		world.setAlive(2, 2);
+
+		assertEquals(cell(0, 0), world.firstAlive());
+		assertEquals(cell(2, 2), world.nextAlive(cell(0, 0)));
+
+		world.toString();
+
+	}
+
 }

@@ -1,6 +1,7 @@
 package gol.world;
 
 import gol.Cell;
+import gol.world.neo.LookupWorld;
 
 import java.util.Iterator;
 
@@ -17,7 +18,7 @@ public interface World {
 	public abstract Cell nextAlive(Cell exclusiveStart);
 
 	public static World create() {
-		return withHashAndEquals(new BitSetWorld());
+		return withHashAndEquals(new LookupWorld());
 	}
 
 	public static Iterable<Cell> allAlive(World world) {

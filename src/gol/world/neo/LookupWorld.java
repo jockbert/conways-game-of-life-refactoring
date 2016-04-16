@@ -3,7 +3,12 @@ package gol.world.neo;
 import gol.Cell;
 import gol.world.World;
 
+import java.util.function.Supplier;
+
 public class LookupWorld implements World {
+
+	private static final int FRAG_SIZE = 5;
+	private static final MiddleLineCalculator calc = new LookupCalc(FRAG_SIZE);
 
 	Sequence<Line> lines = new Sequence<>(() -> new BasicLine());
 
@@ -19,7 +24,37 @@ public class LookupWorld implements World {
 
 	@Override
 	public World nextWorld() {
-		return null;
+		Supplier<Line> lineFactory = () -> Line.defaultLine();
+
+		LineCalculator lineCalculator = LineCalculator.defaultCalc(lineFactory,
+				calc);
+
+		LookupWorld result = new LookupWorld();
+
+		Line line1 = null;
+		Line line2 = new BasicLine();
+		Line line3 = new BasicLine();
+
+		int max = lines.getMax() + 1;
+
+		for (int lineIndex = lines.getMin() - 1; lineIndex <= max; lineIndex++) {
+			line1 = line2;
+			line2 = line3;
+			line3 = lines.getOrMiss(lineIndex + 1);
+
+			Line newLine2 = lineCalculator.nextMiddleLine(asFrags(line1),
+					asFrags(line2), asFrags(line3));
+
+			if (!newLine2.isEmpty()) {
+				result.lines.set(lineIndex, newLine2);
+			}
+		}
+
+		return result;
+	}
+
+	private LineFragments asFrags(Line line1) {
+		return new LineFragments(FRAG_SIZE, line1);
 	}
 
 	@Override
@@ -41,10 +76,12 @@ public class LookupWorld implements World {
 
 		while (c.y <= lines.getMax()) {
 
-			Integer nextX = lines.getOrMiss(c.y).nextAlive(c.x);
+			Line line = lines.getOrMiss(c.y);
+			Integer nextX = line.nextAliveInclusive(c.x);
 
 			if (nextX == null) {
-				c = c.incY(lines.getOrMiss(c.y + 1).minSetBit());
+				Line nextLine = lines.getOrMiss(c.y + 1);
+				c = c.incY(nextLine.minSetBit());
 			} else {
 				return Cell.cell(nextX, c.y);
 			}
