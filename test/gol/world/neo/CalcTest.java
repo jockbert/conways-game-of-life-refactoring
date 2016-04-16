@@ -87,6 +87,7 @@ public abstract class CalcTest {
 		assertCalculation(calc, 0b0000, 0b1001, 0b1000, 0b00);
 		assertCalculation(calc, 0b0000, 0b0111, 0b0000, 0b01);
 		assertCalculation(calc, 0b0000, 0b0111, 0b1000, 0b11);
+		assertCalculation(calc, 0b0000, 0b0000, 0b1110, 0b10);
 	}
 
 	@Test

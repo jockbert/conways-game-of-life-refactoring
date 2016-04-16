@@ -57,7 +57,7 @@ public final class BasicLine implements Line {
 	}
 
 	@Override
-	public Integer nextAlive(int fromX) {
+	public Integer nextAliveInclusive(int fromX) {
 		fromX = fromX < minSetBit() ? minSetBit() : fromX;
 
 		int result = bs.nextSetBit(fromX - offset);

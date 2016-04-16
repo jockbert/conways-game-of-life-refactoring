@@ -22,7 +22,7 @@ public interface Indexed<T> {
 	public static int max(Indexed<?>... is) {
 		int result = Integer.MIN_VALUE;
 		for (Indexed<?> i : is) {
-			int index = i.minIndex();
+			int index = i.maxIndex();
 			result = index > result ? index : result;
 		}
 		return result;
