@@ -1,9 +1,9 @@
 package gol.world.neo;
 
-public class LineFragments implements Fragments {
+public final class LineFragments implements Fragments {
 
-	private int fragSize;
-	private Line line;
+	private final int fragSize;
+	private final Line line;
 
 	public LineFragments(int fragSize, Line line) {
 		this.fragSize = fragSize;
@@ -37,14 +37,33 @@ public class LineFragments implements Fragments {
 	}
 
 	@Override
-	public int get(int index) {
-		int length = fragSize + 2;
-		int startIndex = index * fragSize - 1;
+	public Integer get(int index) {
+		int startIndex = fragStartIndex(index);
 		int result = 0;
 
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < fragLength(); i++) {
 			result <<= 1;
 			result += line.isSet(startIndex + i) ? 1 : 0;
+		}
+
+		return result;
+	}
+
+	private int fragStartIndex(int index) {
+		return index * fragSize - 1;
+	}
+
+	private final int fragLength() {
+		return fragSize + 2;
+	}
+
+	private int reverse(int value) {
+		int result = 0;
+
+		for (int i = 0; i < fragLength(); i++) {
+			result <<= 1;
+			result |= value & 1;
+			value >>= 1;
 		}
 
 		return result;
@@ -53,6 +72,18 @@ public class LineFragments implements Fragments {
 	@Override
 	public int fragSize() {
 		return fragSize;
+	}
+
+	@Override
+	public void set(int index, Integer value) {
+		int startIndex = fragStartIndex(index);
+		int eulav = reverse(value);
+
+		for (int i = 0; i < fragLength(); i++) {
+			if ((eulav & 1) != 0)
+				line.set(startIndex + i);
+			eulav >>= 1;
+		}
 	}
 
 }

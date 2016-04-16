@@ -8,6 +8,8 @@ public interface Indexed<T> {
 
 	T get(int index);
 
+	void set(int index, T value);
+
 	public static int min(Indexed<?>... is) {
 		int result = Integer.MAX_VALUE;
 		for (Indexed<?> i : is) {

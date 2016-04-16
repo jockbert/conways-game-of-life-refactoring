@@ -13,4 +13,8 @@ public interface Line {
 	boolean isEmpty();
 
 	Integer nextAlive(int fromX);
+
+	static Line defaultLine() {
+		return new BasicLine();
+	}
 }
