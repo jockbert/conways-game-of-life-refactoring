@@ -107,13 +107,31 @@ public interface World {
 			}
 
 			@Override
-			public World nextWorld() {
-				return withHashAndEquals(world.nextWorld());
+			public String toString() {
+				Cell min = Cell.MAX;
+				Cell max = Cell.MIN;
+
+				Cell alive = firstAlive();
+
+				while (alive != null) {
+					min = min.min(alive);
+					max = max.max(alive);
+					alive = nextAlive(alive);
+				}
+				String result = "min=" + min + "\n";
+
+				for (int y = min.y; y <= max.y; y++) {
+					for (int x = min.x; x <= max.x; x++)
+						result += isAlive(x, y) ? '#' : '-';
+					result += '\n';
+				}
+
+				return result;
 			}
 
 			@Override
-			public String toString() {
-				return world.toString();
+			public World nextWorld() {
+				return withHashAndEquals(world.nextWorld());
 			}
 
 			@Override
