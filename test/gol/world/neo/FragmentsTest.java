@@ -112,4 +112,25 @@ public class FragmentsTest {
 
 		assertEquals(2, f.fragSize());
 	}
+
+	@Test
+	public void testOverlapping5() throws Exception {
+		Line l = Line.defaultLine();
+		l.set(-1);
+		l.set(0);
+		l.set(1);
+
+		Fragments f = new LineFragments(5, l);
+
+		assertEquals(-1, f.minIndex());
+		assertEquals(0, f.maxIndex());
+
+		assertEquals(0b0000000, (int) f.get(-2));
+		assertEquals(0b0000011, (int) f.get(-1));
+		assertEquals(0b1110000, (int) f.get(0));
+		assertEquals(0b0000000, (int) f.get(1));
+
+		assertEquals(5, f.fragSize());
+	}
+
 }

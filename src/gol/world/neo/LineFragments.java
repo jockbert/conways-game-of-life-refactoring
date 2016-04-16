@@ -16,7 +16,7 @@ public final class LineFragments implements Fragments {
 			return Integer.MAX_VALUE;
 
 		int minSetBit = line.minSetBit();
-		int minMainFrag = minSetBit / fragSize;
+		int minMainFrag = minSetBit / fragSize + (minSetBit < 0 ? -1 : 0);
 
 		boolean hasOverlapToNextFrag = minSetBit % fragSize == 0;
 
