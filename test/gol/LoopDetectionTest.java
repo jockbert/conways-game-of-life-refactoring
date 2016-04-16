@@ -1,8 +1,12 @@
 package gol;
 
-import org.junit.Test;
+import static gol.OutputPrimitives.blinkerHorizontal;
+import static gol.OutputPrimitives.blinkerVertical;
+import static gol.OutputPrimitives.block;
+import static gol.OutputPrimitives.start;
+import static gol.OutputPrimitives.step;
 
-import static gol.OutputPrimitives.*;
+import org.junit.Test;
 
 public class LoopDetectionTest extends AbstractTest {
 
@@ -77,7 +81,55 @@ public class LoopDetectionTest extends AbstractTest {
 
 		outputHasStepCount(100);
 	}
-	
+
+	@Test
+	public void gliderIsNeverInALoop() {
+		givenProgramArgs("-f examples/gliderRight -s 5 -w 5 -h 5 -l 10");
+
+		output("-#---");
+		output("--#--");
+		output("###--");
+		output("-----");
+		output("-----");
+		output(start);
+
+		output("-----");
+		output("#-#--");
+		output("-##--");
+		output("-#---");
+		output("-----");
+		output(step(1));
+
+		output("-----");
+		output("--#--");
+		output("#-#--");
+		output("-##--");
+		output("-----");
+		output(step(2));
+
+		output("-----");
+		output("-#---");
+		output("--##-");
+		output("-##--");
+		output("-----");
+		output(step(3));
+
+		output("-----");
+		output("--#--");
+		output("---#-");
+		output("-###-");
+		output("-----");
+		output(step(4));
+
+		output("-----");
+		output("-----");
+		output("-#-#-");
+		output("--##-");
+		output("--#--");
+		output(step(5));
+
+	}
+
 	@Test
 	public void gliderOutsideOfViewportIsNeverInALoop() {
 		// Also tests that alive cells left of view port is
@@ -144,5 +196,5 @@ public class LoopDetectionTest extends AbstractTest {
 		output("------#-");
 		output(step(11));
 	}
-	
+
 }
