@@ -84,4 +84,13 @@ public final class Sequence<T> implements Iterable<Integer> {
 		throw new LowerThanFirstException("unexpected index " + index
 				+ " is lower than first set index " + arrOffset);
 	}
+
+	@Override
+	public String toString() {
+		String result = "";
+		for (T t : arr) {
+			result += t + "\n";
+		}
+		return result;
+	}
 }
