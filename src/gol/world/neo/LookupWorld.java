@@ -31,19 +31,19 @@ public class LookupWorld implements World {
 
 		LookupWorld result = new LookupWorld();
 
-		Line line1 = null;
-		Line line2 = new BasicLine();
-		Line line3 = new BasicLine();
+		Fragments line1 = null;
+		Fragments line2 = asFrags(new BasicLine());
+		Fragments line3 = asFrags(new BasicLine());
 
 		int max = lines.getMax() + 1;
+		int min = lines.getMin() - 1;
 
-		for (int lineIndex = lines.getMin() - 1; lineIndex <= max; lineIndex++) {
+		for (int lineIndex = min; lineIndex <= max; lineIndex++) {
 			line1 = line2;
 			line2 = line3;
-			line3 = lines.getOrMiss(lineIndex + 1);
+			line3 = asFrags(lines.getOrMiss(lineIndex + 1));
 
-			Line newLine2 = lineCalculator.nextMiddleLine(asFrags(line1),
-					asFrags(line2), asFrags(line3));
+			Line newLine2 = lineCalculator.nextMiddleLine(line1, line2, line3);
 
 			if (!newLine2.isEmpty()) {
 				result.lines.set(lineIndex, newLine2);
@@ -53,8 +53,8 @@ public class LookupWorld implements World {
 		return result;
 	}
 
-	private LineFragments asFrags(Line line1) {
-		return new LineFragments(FRAG_SIZE, line1);
+	private Fragments asFrags(Line line1) {
+		return new CachedFragments(new LineFragments(FRAG_SIZE, line1));
 	}
 
 	@Override
