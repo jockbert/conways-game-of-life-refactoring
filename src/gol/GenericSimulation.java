@@ -4,7 +4,7 @@ import gol.world.World;
 
 import java.util.OptionalInt;
 
-public class GenericSimulation implements Simulation{
+public class GenericSimulation implements Simulation {
 
 	static class SimulationConfig {
 		int stepLimit;
@@ -16,11 +16,12 @@ public class GenericSimulation implements Simulation{
 	}
 
 	private SimulationConfig conf;
-	
-	GenericSimulation(SimulationConfig conf){
+
+	GenericSimulation(SimulationConfig conf) {
 		this.conf = conf;
 	}
 
+	@Override
 	public void runSimulation() {
 		OptionalInt loop = OptionalInt.empty();
 		World world = conf.world;
