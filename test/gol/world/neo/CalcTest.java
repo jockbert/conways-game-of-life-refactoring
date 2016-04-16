@@ -37,6 +37,7 @@ public abstract class CalcTest {
 		@Test
 		public void testLookupKey() throws Exception {
 			assertEquals(0b111011001, calc(1).getLookupKey(0b111, 0b011, 0b001));
+			assertEquals(12336, calc(6).getLookupKey(0, 48, 48));
 		}
 
 		@Test
@@ -73,6 +74,8 @@ public abstract class CalcTest {
 		assertCalculation(calc, 0b000, 0b101, 0b100, 1);
 		assertCalculation(calc, 0b000, 0b111, 0b000, 1);
 
+		assertCalculation(calc, 0b011, 0b010, 0b001, 1);
+
 		assertCalculation(calc, 0b1000, 0b011, 0b000, 0);
 		assertCalculation(calc, 0b000, 0b1011, 0b000, 0);
 		assertCalculation(calc, 0b000, 0b011, 0b1000, 0);
@@ -88,6 +91,8 @@ public abstract class CalcTest {
 		assertCalculation(calc, 0b0000, 0b0111, 0b0000, 0b01);
 		assertCalculation(calc, 0b0000, 0b0111, 0b1000, 0b11);
 		assertCalculation(calc, 0b0000, 0b0000, 0b1110, 0b10);
+		assertCalculation(calc, 0b1100, 0b0000, 0b1100, 0b00);
+		assertCalculation(calc, 0b0000, 0b1100, 0b1100, 0b10);
 	}
 
 	@Test
@@ -97,6 +102,13 @@ public abstract class CalcTest {
 		assertCalculation(calc, 0b0000000, 0b0000000, 0b0000000, 0b00000);
 		assertCalculation(calc, 0b1110111, 0b0000000, 0b0000000, 0b10001);
 		assertCalculation(calc, 0b0000000, 0b1111011, 0b0000000, 0b11000);
+	}
+
+	@Test
+	public void testWidhtSix() throws Exception {
+		MiddleLineCalculator calc = calc(6);
+
+		assertCalculation(calc, 0b00000000, 0b00110000, 0b00110000, 0b011000);
 	}
 
 	private void assertCalculation(MiddleLineCalculator calc, int line1,

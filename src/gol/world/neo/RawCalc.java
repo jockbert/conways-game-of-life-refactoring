@@ -8,6 +8,7 @@ public final class RawCalc implements MiddleLineCalculator {
 		this.width = width;
 	}
 
+	@Override
 	public int calculate(int line1, int line2, int line3) {
 		int result = 0;
 		for (int i = 0; i < width; ++i) {
@@ -32,7 +33,12 @@ public final class RawCalc implements MiddleLineCalculator {
 	}
 
 	private int willLive(int line1, int line2, int line3) {
-		return count(line1) + count(line2) + count(line3) == 3 ? 1 : 0;
+		int totalCount = count(line1) + count(line2) + count(line3);
+		boolean isAlive = (line2 & 2) != 0;
+		boolean isAliveWith3Neighbours = totalCount == 4 && isAlive;
+		boolean isTotalCount3 = totalCount == 3;
+
+		return isTotalCount3 || isAliveWith3Neighbours ? 1 : 0;
 	}
 
 	private int count(int line) {
