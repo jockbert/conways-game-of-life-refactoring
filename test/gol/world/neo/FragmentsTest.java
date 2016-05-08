@@ -4,12 +4,24 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-public class FragmentsTest {
+public abstract class FragmentsTest {
+
+	protected Line l;
+	protected Fragments f;
+
+	abstract void setUp(int fragSize);
+
+	public static class LineFragmentsTest extends FragmentsTest {
+		@Override
+		void setUp(int fragSize) {
+			l = new BasicLine();
+			f = new LineFragments(fragSize, l);
+		}
+	}
 
 	@Test
 	public void testEmpty() throws Exception {
-		Line l = new BasicLine();
-		Fragments f = new LineFragments(33, l);
+		setUp(33);
 
 		assertEquals(Integer.MAX_VALUE, f.minIndex());
 		assertEquals(Integer.MIN_VALUE, f.maxIndex());
@@ -25,10 +37,9 @@ public class FragmentsTest {
 
 	@Test
 	public void testOneSetBitFragSize1() throws Exception {
-		Line l = new BasicLine();
-		l.set(0);
+		setUp(1);
 
-		Fragments f = new LineFragments(1, l);
+		l.set(0);
 
 		assertEquals(-1, f.minIndex());
 		assertEquals(1, f.maxIndex());
@@ -44,10 +55,9 @@ public class FragmentsTest {
 
 	@Test
 	public void testOneSetBitFragSize2() throws Exception {
-		Line l = new BasicLine();
-		l.set(0);
+		setUp(2);
 
-		Fragments f = new LineFragments(2, l);
+		l.set(0);
 
 		assertEquals(-1, f.minIndex());
 		assertEquals(0, f.maxIndex());
@@ -62,10 +72,9 @@ public class FragmentsTest {
 
 	@Test
 	public void testOneSetBitFragSize3() throws Exception {
-		Line l = new BasicLine();
-		l.set(1);
+		setUp(3);
 
-		Fragments f = new LineFragments(3, l);
+		l.set(1);
 
 		assertEquals(0, f.minIndex());
 		assertEquals(0, f.maxIndex());
@@ -79,10 +88,9 @@ public class FragmentsTest {
 
 	@Test
 	public void testOneSetBitFragSize2WithOffset() throws Exception {
-		Line l = new BasicLine();
-		l.set(3);
+		setUp(2);
 
-		Fragments f = new LineFragments(2, l);
+		l.set(3);
 
 		assertEquals(1, f.minIndex());
 		assertEquals(2, f.maxIndex());
@@ -97,8 +105,7 @@ public class FragmentsTest {
 
 	@Test
 	public void testSetFragment() throws Exception {
-		Line l = new BasicLine();
-		Fragments f = new LineFragments(2, l);
+		setUp(2);
 
 		f.set(1, 0b0010);
 
@@ -115,12 +122,11 @@ public class FragmentsTest {
 
 	@Test
 	public void testOverlapping5() throws Exception {
-		Line l = Line.defaultLine();
+		setUp(5);
+
 		l.set(-1);
 		l.set(0);
 		l.set(1);
-
-		Fragments f = new LineFragments(5, l);
 
 		assertEquals(-1, f.minIndex());
 		assertEquals(0, f.maxIndex());
@@ -132,5 +138,4 @@ public class FragmentsTest {
 
 		assertEquals(5, f.fragSize());
 	}
-
 }
