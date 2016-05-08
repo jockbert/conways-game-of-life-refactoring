@@ -18,13 +18,6 @@ public abstract class WorldTest {
 
 	private World world = getWorld();
 
-	public static class BitSetWorldTest extends WorldTest {
-		@Override
-		World getWorld() {
-			return new BitSetWorld();
-		}
-	}
-
 	public static class LookupWorldTest extends WorldTest {
 		@Override
 		World getWorld() {
