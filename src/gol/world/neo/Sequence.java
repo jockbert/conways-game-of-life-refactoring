@@ -1,11 +1,10 @@
 package gol.world.neo;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class Sequence<T> implements Iterable<Integer> {
+public final class Sequence<T> {
 
 	private static final int EMPTY_MAX = Integer.MIN_VALUE;
 	private static final int EMPTY_MIN = Integer.MAX_VALUE;
@@ -16,11 +15,6 @@ public final class Sequence<T> implements Iterable<Integer> {
 
 	public Sequence(Supplier<T> nullSupplier) {
 		this.nullSupplier = nullSupplier;
-	}
-
-	@Override
-	public Iterator<Integer> iterator() {
-		return new RangeIterator(getMin(), getMax());
 	}
 
 	public T getOrMiss(int index) {

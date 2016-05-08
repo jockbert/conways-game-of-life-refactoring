@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Iterator;
-
 import org.junit.Test;
 
 public class SequenceTest {
@@ -92,23 +90,5 @@ public class SequenceTest {
 	@Test
 	public void testEmptyMax() throws Exception {
 		assertEquals(Integer.MIN_VALUE, s.getMax());
-	}
-
-	@Test
-	public void testIterable() throws Exception {
-		s.set(3, "x");
-		s.set(5, "x");
-
-		assertTrue(s instanceof Iterable<?>);
-
-		Iterator<Integer> it = s.iterator();
-
-		assertTrue(it.hasNext());
-		assertEquals(3, (int) it.next());
-		assertTrue(it.hasNext());
-		assertEquals(4, (int) it.next());
-		assertTrue(it.hasNext());
-		assertEquals(5, (int) it.next());
-		assertFalse(it.hasNext());
 	}
 }
