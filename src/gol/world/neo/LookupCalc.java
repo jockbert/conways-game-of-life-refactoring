@@ -18,9 +18,11 @@ public class LookupCalc implements MiddleLineCalculator {
 
 		for (int line1 = 0; line1 <= maxLineValue; ++line1) {
 			for (int line2 = 0; line2 <= maxLineValue; ++line2) {
-				for (int line3 = 0; line3 <= maxLineValue; ++line3) {
-					int key = getLookupKey(line1, line2, line3);
+				for (int line3 = line1; line3 <= maxLineValue; ++line3) {
 					int result = calc.calculate(line1, line2, line3);
+					int key = getLookupKey(line1, line2, line3);
+					table[key] = (short) result;
+					key = getLookupKey(line3, line2, line1);
 					table[key] = (short) result;
 				}
 			}
