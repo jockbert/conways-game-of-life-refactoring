@@ -11,14 +11,6 @@ public abstract class FragmentsTest {
 
 	abstract void setUp(int fragSize);
 
-	public static class LineFragmentsTest extends FragmentsTest {
-		@Override
-		void setUp(int fragSize) {
-			l = new BasicLine();
-			f = new LineFragments(fragSize, l);
-		}
-	}
-
 	public static class BasicFragmentsTest extends FragmentsTest {
 		@Override
 		void setUp(int fragSize) {

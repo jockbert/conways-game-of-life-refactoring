@@ -13,22 +13,6 @@ public abstract class LineTest {
 
 	protected abstract Line line();
 
-	public static class BasicLineTest extends LineTest {
-
-		@Override
-		protected Line line() {
-			return new BasicLine();
-		}
-	}
-
-	public static class FragmentedLineNestedTest extends LineTest {
-
-		@Override
-		protected Line line() {
-			return new FragmentedLine(new LineFragments(3, new BasicLine()));
-		}
-	}
-
 	public static class FragmentedLineBareTest extends LineTest {
 
 		@Override

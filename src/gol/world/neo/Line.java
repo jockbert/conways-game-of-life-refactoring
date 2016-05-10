@@ -14,10 +14,6 @@ public interface Line {
 
 	Integer nextAliveInclusive(int fromX);
 
-	static Line defaultLine() {
-		return new HashEqualsLine(new BasicLine());
-	}
-
 	public static final class HashEqualsLine implements Line {
 
 		private Line line;
