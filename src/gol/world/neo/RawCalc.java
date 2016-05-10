@@ -42,11 +42,6 @@ public final class RawCalc implements MiddleLineCalculator {
 	}
 
 	private int count(int line) {
-		int count = 0;
-		for (int i = 0; i < 3; i++) {
-			count += line & 1;
-			line >>= 1;
-		}
-		return count;
+		return (line & 1) + (line >> 1 & 1) + (line >> 2 & 1);
 	}
 }
