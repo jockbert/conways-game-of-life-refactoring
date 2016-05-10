@@ -8,9 +8,16 @@ import java.util.function.Supplier;
 public class LookupWorld implements World {
 
 	private static final int FRAG_SIZE = 5;
+	private static final Supplier<FragmentedLine> NULL_SUPPLIER = () -> new FragmentedLine(
+			createFragments());
+
+	private static BasicFragments createFragments() {
+		return new BasicFragments(FRAG_SIZE);
+	}
+
 	private static final MiddleLineCalculator calc = new LookupCalc(FRAG_SIZE);
 
-	Sequence<Line> lines = new Sequence<>(() -> new BasicLine());
+	Sequence<FragmentedLine> lines = new Sequence<>(NULL_SUPPLIER);
 
 	@Override
 	public boolean isAlive(int x, int y) {
@@ -24,16 +31,14 @@ public class LookupWorld implements World {
 
 	@Override
 	public World nextWorld() {
-		Supplier<Line> lineFactory = () -> Line.defaultLine();
-
-		LineCalculator lineCalculator = LineCalculator.defaultCalc(lineFactory,
-				calc);
+		LineCalculator lineCalculator = LineCalculator.defaultCalc(
+				LookupWorld::createFragments, calc);
 
 		LookupWorld result = new LookupWorld();
 
 		Fragments line1 = null;
-		Fragments line2 = asFrags(new BasicLine());
-		Fragments line3 = asFrags(new BasicLine());
+		Fragments line2 = createFragments();
+		Fragments line3 = createFragments();
 
 		int max = lines.getMax() + 1;
 		int min = lines.getMin() - 1;
@@ -41,9 +46,12 @@ public class LookupWorld implements World {
 		for (int lineIndex = min; lineIndex <= max; lineIndex++) {
 			line1 = line2;
 			line2 = line3;
-			line3 = asFrags(lines.getOrMiss(lineIndex + 1));
+			line3 = lines.getOrMiss(lineIndex + 1).fragments;
 
-			Line newLine2 = lineCalculator.nextMiddleLine(line1, line2, line3);
+			Fragments newFrags2 = lineCalculator.nextMiddleLine(line1, line2,
+					line3);
+
+			FragmentedLine newLine2 = new FragmentedLine(newFrags2);
 
 			if (!newLine2.isEmpty()) {
 				result.lines.set(lineIndex, newLine2);
@@ -51,10 +59,6 @@ public class LookupWorld implements World {
 		}
 
 		return result;
-	}
-
-	private Fragments asFrags(Line line1) {
-		return new CachedFragments(new LineFragments(FRAG_SIZE, line1));
 	}
 
 	@Override

@@ -2,12 +2,39 @@ package gol.world.neo;
 
 public class FragmentedLine implements Line {
 
-	private Fragments fragments;
-	private Integer smallestBitIndex = null;
-	private Integer largestBitIndex = null;
+	public Fragments fragments;
+	private Integer smallestBitIndex;
+	private Integer largestBitIndex;
 
 	public FragmentedLine(Fragments fragments) {
 		this.fragments = fragments;
+
+		if (fragments.minIndex() == Integer.MAX_VALUE) {
+			smallestBitIndex = null;
+			largestBitIndex = null;
+		} else {
+			int fragSize = fragments.fragSize();
+
+			int minFrag = fragments.get(fragments.minIndex());
+			int mask = 1 << fragSize;
+			int bitIndex = fragments.minIndex() * fragSize;
+
+			while ((mask & minFrag) == 0) {
+				mask >>= 1;
+				bitIndex++;
+			}
+			smallestBitIndex = bitIndex;
+
+			int maxFrag = fragments.get(fragments.maxIndex());
+			mask = 1;
+			bitIndex = (fragments.maxIndex() + 1) * fragSize;
+
+			while ((mask & maxFrag) == 0) {
+				mask <<= 1;
+				bitIndex--;
+			}
+			largestBitIndex = bitIndex;
+		}
 	}
 
 	@Override

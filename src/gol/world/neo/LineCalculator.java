@@ -4,17 +4,15 @@ import java.util.function.Supplier;
 
 public interface LineCalculator {
 
-	static LineCalculator defaultCalc(Supplier<Line> lineFactory,
+	static LineCalculator defaultCalc(Supplier<Fragments> fragsFactory,
 			MiddleLineCalculator calc) {
 		return new LineCalculator() {
 
 			@Override
-			public Line nextMiddleLine(Fragments line1, Fragments line2,
+			public Fragments nextMiddleLine(Fragments line1, Fragments line2,
 					Fragments line3) {
 
-				Line resultLine = lineFactory.get();
-				Fragments resultFragments = new LineFragments(line1.fragSize(),
-						resultLine);
+				Fragments resultFragments = fragsFactory.get();
 
 				int minIndex = Indexed.min(line1, line2, line3);
 				int maxIndex = Indexed.max(line1, line2, line3);
@@ -29,10 +27,10 @@ public interface LineCalculator {
 					resultFragments.set(i, resultFrag << 1);
 				}
 
-				return resultLine;
+				return resultFragments;
 			}
 		};
 	}
 
-	Line nextMiddleLine(Fragments line1, Fragments line2, Fragments line3);
+	Fragments nextMiddleLine(Fragments line1, Fragments line2, Fragments line3);
 }

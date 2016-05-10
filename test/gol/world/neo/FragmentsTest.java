@@ -19,9 +19,17 @@ public abstract class FragmentsTest {
 		}
 	}
 
+	public static class BasicFragmentsTest extends FragmentsTest {
+		@Override
+		void setUp(int fragSize) {
+			f = new BasicFragments(fragSize);
+			l = new FragmentedLine(f);
+		}
+	}
+
 	@Test
 	public void testEmpty() throws Exception {
-		setUp(33);
+		setUp(5);
 
 		assertEquals(Integer.MAX_VALUE, f.minIndex());
 		assertEquals(Integer.MIN_VALUE, f.maxIndex());
@@ -32,7 +40,7 @@ public abstract class FragmentsTest {
 		assertEquals(0, (int) f.get(1));
 		assertEquals(0, (int) f.get(2));
 
-		assertEquals(33, f.fragSize());
+		assertEquals(5, f.fragSize());
 	}
 
 	@Test

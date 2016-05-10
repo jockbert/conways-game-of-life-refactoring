@@ -21,11 +21,19 @@ public abstract class LineTest {
 		}
 	}
 
-	public static class FragmentedLineTest extends LineTest {
+	public static class FragmentedLineNestedTest extends LineTest {
 
 		@Override
 		protected Line line() {
 			return new FragmentedLine(new LineFragments(3, new BasicLine()));
+		}
+	}
+
+	public static class FragmentedLineBareTest extends LineTest {
+
+		@Override
+		protected Line line() {
+			return new FragmentedLine(new BasicFragments(3));
 		}
 	}
 
