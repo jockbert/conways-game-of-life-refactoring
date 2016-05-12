@@ -4,10 +4,6 @@ import java.util.ArrayList;
 
 public class BasicFragments implements Fragments {
 
-	// private final static List<Byte> NULLS = Arrays.asList((byte) 0, (byte) 0,
-	// (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0, (byte) 0,
-	// (byte) 0, (byte) 0);
-
 	static class ByteStorage {
 		ArrayList<Byte> list = new ArrayList<Byte>();
 
@@ -20,17 +16,17 @@ public class BasicFragments implements Fragments {
 		void set(int index, byte value) {
 
 			if (list.size() <= index) {
-				list.ensureCapacity(index);
-				// while (list.size() < index - 10) {
-				// list.addAll(NULLS);
-				// }
-				while (list.size() < index) {
-					list.add((byte) 0);
-				}
+				fillUpToIndex(index);
 				list.add(value);
 			} else {
 				list.set(index, value);
 			}
+		}
+
+		private void fillUpToIndex(int index) {
+			list.ensureCapacity(index);
+			while (list.size() < index)
+				list.add((byte) 0);
 		}
 
 		int size() {
